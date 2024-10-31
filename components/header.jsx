@@ -5,13 +5,15 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ProfileDropDown } from "@/components/profile-drop-down";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = React.useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
@@ -29,18 +31,26 @@ export default function Header() {
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <Avatar>
-              <AvatarImage src="logo_small.png" alt="@shadcn" />
+              {/*<AvatarImage src="/logo_small.png" alt="logo" />*/}
+              <Image
+                src="/logo_small.png"
+                alt="logo"
+                width={50}
+                height={50}
+                priority="true"
+              />
               <AvatarFallback>PMS</AvatarFallback>
             </Avatar>
           </Link>
-          <div className="ml-auto flex gap-2">
+          <div className="ml-auto flex gap-2 items-center">
+            <ModeToggle />
+
             <Link href="/login" className="flex items-center space-x-2">
               <Button variant="outline">Sign in</Button>
             </Link>
             <Link href="/signup" className="flex items-center space-x-2">
               <Button>Sign Up</Button>
             </Link>
-            <ModeToggle />
 
             <ProfileDropDown />
           </div>

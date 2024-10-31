@@ -1,6 +1,4 @@
 import { LogOut, Mail, Plus, Settings, User, UserPlus, Users } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,16 +12,24 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import * as React from "react";
+import Image from "next/image";
 
 export function ProfileDropDown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar>
-          <AvatarImage src="logo_small.png" alt="@shadcn" />
-          <AvatarFallback>avatar</AvatarFallback>
+          {/*<AvatarImage src="/logo_small.png" alt="logo" />*/}
+          <Image
+            src="/logo_small.png"
+            alt="logo"
+            width={50}
+            height={50}
+            priority="true"
+          />
+          <AvatarFallback>Me</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
