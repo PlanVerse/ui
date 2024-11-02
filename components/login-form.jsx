@@ -22,7 +22,7 @@ export function LoginForm() {
       event.preventDefault();
       setLoading(true);
 
-      const result = await postApi("/login", {
+      const result = await postApi("/auth/login", {
         email,
         password,
       });
