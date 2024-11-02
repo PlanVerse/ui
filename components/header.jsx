@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ProfileDropDown } from "@/components/profile-drop-down";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = React.useState(false);
@@ -28,7 +29,6 @@ export default function Header() {
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <Avatar>
-              {/* TODO 이미지 최적화가 안되고 있어 확인 필요 */}
               <AvatarImage src="logo_small.png" alt="@shadcn" />
               <AvatarFallback>PMS</AvatarFallback>
             </Avatar>
@@ -41,6 +41,8 @@ export default function Header() {
               <Button>Sign Up</Button>
             </Link>
             <ModeToggle />
+
+            <ProfileDropDown />
           </div>
         </div>
       </div>
