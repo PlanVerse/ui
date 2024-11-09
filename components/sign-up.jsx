@@ -12,7 +12,7 @@ export function SignUp() {
       <CardHeader>
         <CardTitle className="text-2xl">Create an account</CardTitle>
         <CardDescription>
-          Enter your email below to login to your account
+          Enter your email below to Sign In to your account
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -33,8 +33,8 @@ export function SignUp() {
         </div>
         <div className="mt-4 text-center text-sm">
           Already have an account?{" "}
-          <Link href="/login" className="underline">
-            Login
+          <Link href="/signin" className="underline">
+            Sign In
           </Link>
         </div>
       </CardContent>

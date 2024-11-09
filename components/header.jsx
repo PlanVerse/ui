@@ -45,7 +45,7 @@ export default function Header() {
           <div className="ml-auto flex gap-2 items-center">
             <ModeToggle />
 
-            <Link href="/login" className="flex items-center space-x-2">
+            <Link href="/signin" className="flex items-center space-x-2">
               <Button variant="outline">Sign in</Button>
             </Link>
             <Link href="/signup" className="flex items-center space-x-2">

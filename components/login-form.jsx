@@ -22,13 +22,13 @@ export function LoginForm() {
       event.preventDefault();
       setLoading(true);
 
-      const result = await postApi("/auth/login", {
+      const result = await postApi("/auth/sign-in", {
         email,
         password,
       });
 
       toast({
-        title: "Login Successful",
+        title: "Sign In Successful",
         description: "You have been successfully logged in.",
       });
     } catch (err) {
@@ -46,9 +46,9 @@ export function LoginForm() {
   return (
     (<Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardTitle className="text-2xl">Sign In</CardTitle>
         <CardDescription>
-          Enter your email below to login to your account
+          Enter your email below to Sign In to your account
         </CardDescription>
       </CardHeader>
 
@@ -96,7 +96,7 @@ export function LoginForm() {
                 <LoadingButton />
                 :
                 <Button type="submit" className="w-full" disabled={loading}>
-                  Login
+                  Sign In
                 </Button>
             }
           </div>

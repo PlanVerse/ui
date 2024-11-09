@@ -60,7 +60,7 @@ export default function LandingPage() {
 
         <section className="text-center">
           <h3 className="text-2xl font-bold mb-4">Ready to boost your productivity?</h3>
-          <Button size="lg"><Link href="/login">Get Started Now</Link></Button>
+          <Button size="lg"><Link href="/signin">Get Started Now</Link></Button>
         </section>
       </main>
 

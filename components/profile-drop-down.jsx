@@ -81,7 +81,7 @@ export function ProfileDropDown() {
 
         <DropdownMenuItem>
           <LogOut />
-          <span>Log out</span>
+          <span>Sign Out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -4,7 +4,7 @@ export async function middleware(request) {
   if (true) {
     return NextResponse.redirect(
       new URL(
-        `/login?callbackUrl=${encodeURIComponent(request.url)}`,
+        `/signin?callbackUrl=${encodeURIComponent(request.url)}`,
         request.url,
       ),
     );
