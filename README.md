@@ -2,7 +2,7 @@
 ![Next.Js](https://img.shields.io/badge/v15.0.2-000000?logo=nextdotjs&label=Next.js)   
 ![React.js](https://img.shields.io/badge/v18.3.1-000000?logo=react&label=React.js)  
 
-# PMS
+# PMS - PlanVerse
 
 ---
 ## What, How, Who

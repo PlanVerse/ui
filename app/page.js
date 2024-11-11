@@ -8,6 +8,7 @@ import Link from "next/link";
 
 export default function LandingPage() {
   const introduceText = [
+    "PlanVerse",
     "PMS",
     "Project Management System",
   ];
@@ -66,7 +67,7 @@ export default function LandingPage() {
 
       <footer className="bg-muted py-6">
         <div className="container mx-auto px-4 text-center text-muted-foreground">
-          &copy; 2024 PMS. All rights reserved.
+          &copy; 2024 PlanVerse. All rights reserved.
         </div>
       </footer>
     </div>

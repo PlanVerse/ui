@@ -86,7 +86,7 @@ export function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <Link href="/account/forgot-password" className="ml-auto inline-block text-sm underline">
+              <Link href={"/account/forgot-password"} className="ml-auto inline-block text-sm underline">
                 Forgot your password?
               </Link>
             </div>
@@ -102,7 +102,7 @@ export function LoginForm() {
           </div>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="underline">
+            <Link href={"/signup"} className="underline">
               Sign up
             </Link>
           </div>
