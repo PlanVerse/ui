@@ -433,3 +433,5 @@ modules.xml
 *.ipr
 
 # End of https://www.toptal.com/developers/gitignore/api/webstorm+all,webstorm+iml,webstorm,nextjs,react,node,visualstudiocode
+
+*_middleware.js

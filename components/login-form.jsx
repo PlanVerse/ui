@@ -44,7 +44,7 @@ export function LoginForm() {
   };
 
   return (
-    (<Card className="mx-auto max-w-sm">
+    <Card className="mx-auto max-w-sm">
       <CardHeader>
         <CardTitle className="text-2xl">Sign In</CardTitle>
         <CardDescription>
@@ -108,6 +108,6 @@ export function LoginForm() {
           </div>
         </CardContent>
       </form>
-    </Card>)
+    </Card>
   );
 }
