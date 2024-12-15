@@ -33,11 +33,11 @@ export default function Header() {
             <Avatar>
               {/*<AvatarImage src="/logo_small.png" alt="logo" />*/}
               <Image
-                src="/logo_small.png"
+                src="/Logo_transparent.png"
                 alt="logo"
                 width={50}
                 height={50}
-                priority="true"
+                priority
               />
               <AvatarFallback>PMS</AvatarFallback>
             </Avatar>
@@ -47,9 +47,6 @@ export default function Header() {
 
             <Link href="/signin" className="flex items-center space-x-2">
               <Button variant="outline">Sign in</Button>
-            </Link>
-            <Link href="/signup" className="flex items-center space-x-2">
-              <Button>Sign Up</Button>
             </Link>
 
             <ProfileDropDown />

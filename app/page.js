@@ -1,10 +1,10 @@
 "use client";
 
 import Typewriter from "typewriter-effect";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart2, Calendar, CheckCircle, Users } from "lucide-react";
 import Link from "next/link";
+import PrimaryButton from "@/components/PrimaryButton";
 
 export default function LandingPage() {
   const introduceText = [
@@ -22,7 +22,7 @@ export default function LandingPage() {
         <section className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">
             Welcome&nbsp;
-            <span className="text-green-500 dark:text-green-400">
+            <span className="text-[#3B82F6] dark:text-[#3B82F6]">
               <Typewriter
                 options={{
                   strings: introduceText,
@@ -61,7 +61,9 @@ export default function LandingPage() {
 
         <section className="text-center">
           <h3 className="text-2xl font-bold mb-4">Ready to boost your productivity?</h3>
-          <Button size="lg"><Link href="/signin">Get Started Now</Link></Button>
+          <PrimaryButton>
+            <Link href="/signin">Get Started Now</Link>
+          </PrimaryButton>
         </section>
       </main>
 

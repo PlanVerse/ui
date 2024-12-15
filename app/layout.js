@@ -2,6 +2,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/header";
 import { Toaster } from "@/components/ui/toaster";
+import Provider from "@/lib/Provider";
 
 export const metadata = {
   title: "PlanVerse",
@@ -11,18 +12,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-    <head />
-    <body>
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange>
-      <Header />
-      <main>{children}</main>
-      <Toaster />
-    </ThemeProvider>
-    </body>
+      <head />
+      <body>
+        <Provider>
+          <Header />
+          <main>{children}</main>
+          <Toaster />
+        </Provider>
+      </body>
     </html>
   );
 }
