@@ -21,10 +21,28 @@ module.exports = {
   			},
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
+				100: "#E3F2FD",
+				200: "#BBE1FA",
+				300: "#80BFF9",
+				400: "#409CF7",
+				500: "#3B82F6",
+				600: "#316AD4",
+				700: "#2854A9",
+				800: "#1F3E7E",
+				900: "#172856",
   				foreground: 'hsl(var(--primary-foreground))'
   			},
   			secondary: {
   				DEFAULT: 'hsl(var(--secondary))',
+				100: "#F5F7FA",
+				200: "#E4E7EB",
+				300: "#CBD5E1",
+				400: "#9AA5B1",
+				500: "#1F2937",
+				600: "#1C2430",
+				700: "#161E26",
+				800: "#10151C",
+				900: "#0A0E14",
   				foreground: 'hsl(var(--secondary-foreground))'
   			},
   			muted: {
