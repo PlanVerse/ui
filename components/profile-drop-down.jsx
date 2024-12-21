@@ -15,47 +15,50 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import * as React from "react";
 import Image from "next/image";
+import { Button } from "./ui/button";
 
 export function ProfileDropDown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar>
-          {/*<AvatarImage src="/logo_small.png" alt="logo" />*/}
-          <Image
+        {/* <Avatar>
+          <AvatarImage src="/logo_small.png" alt="logo" />
+           <Image
             src="/logo_small.png"
             alt="logo"
             width={50}
             height={50}
             priority="true"
-          />
-          <AvatarFallback>Me</AvatarFallback>
-        </Avatar>
+          /> 
+           <AvatarFallback>Me</AvatarFallback>
+        </Avatar> */}
+        <Settings />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        <DropdownMenuItem>My Page</DropdownMenuItem>
+        {/* <DropdownMenuSeparator /> */}
 
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
+         <DropdownMenuGroup> 
+          
+           {/* <DropdownMenuItem>
             <User />
             <span>Profile</span>
-          </DropdownMenuItem>
-
+          </DropdownMenuItem> */}
+{/* 
           <DropdownMenuItem>
             <Settings />
             <span>Settings</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+          </DropdownMenuItem> */}
+         </DropdownMenuGroup> 
+        {/* <DropdownMenuSeparator />  */}
 
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <Users />
-            <span>Team</span>
+            {/* <Users /> */}
+            <span>Team Setting</span>
           </DropdownMenuItem>
 
-          <DropdownMenuSub>
+          {/* <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <UserPlus />
               <span>Invite users</span>
@@ -70,20 +73,20 @@ export function ProfileDropDown() {
                 <DropdownMenuSeparator />
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
-          </DropdownMenuSub>
+          </DropdownMenuSub> */}
 
           <DropdownMenuItem>
-            <Plus />
-            <span>New Team</span>
+            {/* <Plus /> */}
+            <span>Project Setting</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator /> */}
 
         <DropdownMenuItem>
-          <LogOut />
-          <span>Sign Out</span>
+          {/* <LogOut /> */}
+          <span>Log Out</span>
         </DropdownMenuItem>
-      </DropdownMenuContent>
+      </DropdownMenuContent> 
     </DropdownMenu>
   );
 }
