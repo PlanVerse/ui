@@ -1,6 +1,7 @@
 import Sidebar from "@/components/Sidebar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { headers } from "next/headers";
+import { getSession } from "./session";
 
 export default async function Provider({ children }) {
     const headersList = await headers();
@@ -8,6 +9,7 @@ export default async function Provider({ children }) {
     const isHideSidebar = header_url.includes("/signin") ||
         header_url.includes("/signup") ||
         header_url === process.env.BASE_URL;
+    const token = await getSession();
         
     return (
         <ThemeProvider
@@ -16,7 +18,7 @@ export default async function Provider({ children }) {
           enableSystem
           disableTransitionOnChange
         >
-            {!isHideSidebar && <Sidebar />}
+            {!isHideSidebar && token && <Sidebar />}
             {children}
         </ThemeProvider>
     )

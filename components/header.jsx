@@ -10,7 +10,7 @@ import { ProfileDropDown } from "@/components/profile-drop-down";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-export default function Header() {
+export default function Header({ token }) {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function Header() {
 
   return (
     <header className={cn(
-      "fixed top-0 left-[255px] right-0 z-50 transition-all duration-200",
+      `fixed top-0 ${token ? "left-[255px]" : "left-0"} right-0 z-50 transition-all duration-200`,
       isScrolled ? "bg-background/80 backdrop-blur-sm shadow-sm" : "bg-transparent",
     )}>
       <div className="container mx-auto px-4">
@@ -43,12 +43,14 @@ export default function Header() {
             </Avatar>
           </Link>
           <div className="ml-auto flex gap-2 items-center">
+            {token ? (
+              <ProfileDropDown />
+            ) : (
+              <Link href="/signin" className="flex items-center space-x-2">
+                <Button variant="outline">Log in</Button>
+              </Link>
+            )}
             <ModeToggle />
-
-            <Link href="/signin" className="flex items-center space-x-2">
-              <Button variant="outline">Log in</Button>
-            </Link>
-            <ProfileDropDown />
           </div>
         </div>
       </div>
