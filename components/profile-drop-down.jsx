@@ -1,21 +1,13 @@
-import { LogOut, Mail, Plus, Settings, User, UserPlus, Users } from "lucide-react";
+import { Settings } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import * as React from "react";
-import Image from "next/image";
-import { Button } from "./ui/button";
 
 export function ProfileDropDown() {
   return (
@@ -35,56 +27,19 @@ export function ProfileDropDown() {
         <Settings />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuItem>My Page</DropdownMenuItem>
-        {/* <DropdownMenuSeparator /> */}
-
-         <DropdownMenuGroup> 
-          
-           {/* <DropdownMenuItem>
-            <User />
-            <span>Profile</span>
-          </DropdownMenuItem> */}
-{/* 
-          <DropdownMenuItem>
-            <Settings />
-            <span>Settings</span>
-          </DropdownMenuItem> */}
-         </DropdownMenuGroup> 
-        {/* <DropdownMenuSeparator />  */}
-
+        <DropdownMenuItem>마이페이지</DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            {/* <Users /> */}
-            <span>Team Setting</span>
+            <span>팀 설정</span>
           </DropdownMenuItem>
-
-          {/* <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <UserPlus />
-              <span>Invite users</span>
-            </DropdownMenuSubTrigger>
-
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>
-                  <Mail />
-                  <span>Email</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub> */}
-
           <DropdownMenuItem>
-            {/* <Plus /> */}
-            <span>Project Setting</span>
+            <span>프로젝트 설정</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        {/* <DropdownMenuSeparator /> */}
-
+        <DropdownMenuSeparator />
         <DropdownMenuItem>
-          {/* <LogOut /> */}
-          <span>Log Out</span>
+          <span>로그아웃</span>
         </DropdownMenuItem>
       </DropdownMenuContent> 
     </DropdownMenu>

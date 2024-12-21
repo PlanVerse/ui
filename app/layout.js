@@ -1,5 +1,4 @@
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
 import Header from "@/components/header";
 import { Toaster } from "@/components/ui/toaster";
 import Provider from "@/lib/Provider";
@@ -12,7 +11,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <head />
+      <head>
+        <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+      </head>
       <body>
         <Provider>
           <Header />
