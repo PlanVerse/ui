@@ -10,7 +10,7 @@ const Section = ({ bgColor, children }) => (
   <section className={`w-full h-dvh ${bgColor} flex items-center justify-center gap-4 text-secondary-500 px-6`}>
     {children}
   </section>
-)
+);
 
 export default function LandingPage() {
   // const introduceText = [

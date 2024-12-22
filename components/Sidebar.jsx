@@ -1,74 +1,77 @@
 import { ChevronDown } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 import {
-    SidebarProvider,
     Sidebar as ShadcnSidebar,
     SidebarContent,
     SidebarMenu,
-    SidebarMenuButton,
     SidebarMenuSub,
     SidebarMenuSubItem,
     SidebarGroup,
     SidebarGroupLabel
 } from "./ui/sidebar";
+import Link from "next/link";
 
 export default async function Sidebar() {
     return (
-        <SidebarProvider defaultOpen>
-            <ShadcnSidebar>
-                <SidebarContent>
-                    <SidebarMenu>
-                        <Collapsible defaultOpen className="group/collapsible">
-                            <SidebarGroup>
-                                <SidebarGroupLabel asChild>
-                                    <CollapsibleTrigger>
-                                        팀
-                                        <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                                    </CollapsibleTrigger>
-                                </SidebarGroupLabel>
-                                <CollapsibleContent>
-                                    <SidebarMenuSub>
-                                        <SidebarMenuSubItem>
+        <ShadcnSidebar>
+            <SidebarContent>
+                <SidebarMenu>
+                    <Collapsible defaultOpen className="group/collapsible">
+                        <SidebarGroup>
+                            <SidebarGroupLabel asChild>
+                                <CollapsibleTrigger className="text-white">
+                                    팀
+                                    <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                                </CollapsibleTrigger>
+                            </SidebarGroupLabel>
+                            <CollapsibleContent>
+                                <SidebarMenuSub>
+                                    <Link href="/team" className="hover:cursor-pointer">
+                                        <SidebarMenuSubItem className="text-white">
                                             팀 목록
                                         </SidebarMenuSubItem>
-                                        <SidebarMenuSubItem>
+                                    </Link>
+                                    <Link href="/team/create" className="hover:cursor-pointer">
+                                        <SidebarMenuSubItem className="text-white">
                                             팀 생성
                                         </SidebarMenuSubItem>
-                                        <SidebarMenuSubItem>
+                                    </Link>
+                                    <Link href="/team/add-user" className="hover:cursor-pointer">
+                                        <SidebarMenuSubItem className="text-white">
                                             인원 추가
                                         </SidebarMenuSubItem>
-                                    </SidebarMenuSub>
-                                </CollapsibleContent>
-                            </SidebarGroup>
-                        </Collapsible>
-                    </SidebarMenu>
-                    <SidebarMenu>
-                        <Collapsible className="group/collapsible">
-                            <SidebarGroup>
-                                <SidebarGroupLabel asChild>
-                                    <CollapsibleTrigger>
-                                        프로젝트
-                                        <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                                    </CollapsibleTrigger>
-                                </SidebarGroupLabel>
-                                <CollapsibleContent>
-                                    <SidebarMenuSub>
-                                        <SidebarMenuSubItem>
-                                            프로젝트 목록
-                                        </SidebarMenuSubItem>
-                                        <SidebarMenuSubItem>
-                                            프로젝트 생성
-                                        </SidebarMenuSubItem>
-                                        <SidebarMenuSubItem>
-                                            인원 추가
-                                        </SidebarMenuSubItem>
-                                    </SidebarMenuSub>
-                                </CollapsibleContent>
-                            </SidebarGroup>
-                        </Collapsible>
-                    </SidebarMenu>
-                </SidebarContent>
-            </ShadcnSidebar>
-        </SidebarProvider>
+                                    </Link>
+                                </SidebarMenuSub>
+                            </CollapsibleContent>
+                        </SidebarGroup>
+                    </Collapsible>
+                </SidebarMenu>
+                <SidebarMenu>
+                    <Collapsible className="group/collapsible">
+                        <SidebarGroup>
+                            <SidebarGroupLabel asChild>
+                                <CollapsibleTrigger className="text-white">
+                                    프로젝트
+                                    <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+                                </CollapsibleTrigger>
+                            </SidebarGroupLabel>
+                            <CollapsibleContent>
+                                <SidebarMenuSub>
+                                    <SidebarMenuSubItem className="text-white">
+                                        프로젝트 목록
+                                    </SidebarMenuSubItem>
+                                    <SidebarMenuSubItem className="text-white">
+                                        프로젝트 생성
+                                    </SidebarMenuSubItem>
+                                    <SidebarMenuSubItem className="text-white">
+                                        인원 추가
+                                    </SidebarMenuSubItem>
+                                </SidebarMenuSub>
+                            </CollapsibleContent>
+                        </SidebarGroup>
+                    </Collapsible>
+                </SidebarMenu>
+            </SidebarContent>
+        </ShadcnSidebar>
     )
 };
