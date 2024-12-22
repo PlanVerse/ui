@@ -20,7 +20,9 @@ export default async function RootLayout({ children }) {
       <body>
         <Provider>
           <Header token={token} />
-          <main>{children}</main>
+          <main className="w-full">
+            {children}
+          </main>
           <Toaster />
         </Provider>
       </body>
