@@ -28,7 +28,7 @@ export default function LandingPage() {
               {`업무 관리에 더 이상\n많은 시간을 쓰지 마세요`}
             </h1>
             <h3 className="text-2xl font-semibold">
-              {`PlanVerse로 빠르고 편리하게`}
+              {`planVerse로 업무의 효율을 늘려보세요`}
             </h3>
           </div>
           <div className="flex items-center justify-center w-1/2 h-[512px] bg-gray-100">
@@ -36,10 +36,30 @@ export default function LandingPage() {
           </div>
         </Section>
         <Section bgColor="bg-white">
-
+          <div className="flex items-center justify-center w-1/2 h-[512px] bg-gray-100">
+            이미지 영역
+          </div>
+          <div className="w-1/2">
+            <h1 className="text-5xl font-bold mb-4 text-right">
+              {`빠르게.`}
+            </h1>
+            <h3 className="text-2xl font-semibold whitespace-pre-wrap text-right">
+              {`필수 기능만 탑재하여\n더욱 빠른 로딩 속도를 경험해보세요`}
+            </h3>
+          </div>
         </Section>
         <Section bgColor="bg-primary-100">
-
+          <div className="w-1/2">
+            <h1 className="text-5xl font-bold whitespace-pre-wrap mb-4">
+              {`간편하게.`}
+            </h1>
+            <h3 className="text-2xl font-semibold">
+              {`처음 사용해도 어렵지 않아요`}
+            </h3>
+          </div>
+          <div className="flex items-center justify-center w-1/2 h-[512px] bg-gray-100">
+            이미지 영역
+          </div>
         </Section>
       </main>
       <footer className="bg-muted py-6">

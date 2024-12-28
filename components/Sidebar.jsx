@@ -38,7 +38,7 @@ export default async function Sidebar() {
                                     </Link>
                                     <Link href="/team/add-user" className="hover:cursor-pointer">
                                         <SidebarMenuSubItem className="text-white">
-                                            인원 추가
+                                            팀원 추가
                                         </SidebarMenuSubItem>
                                     </Link>
                                 </SidebarMenuSub>
