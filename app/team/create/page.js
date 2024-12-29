@@ -11,30 +11,42 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
     teamName: z.string(),
-    teamDescription: z.string().max(100),
-    teamMembers: z.array(z.string())
+    teamDescription: z.string().max(100)
 })
 
 export default function TeamCreatePage() {
-    const [teamName, setTeamName] = useState("");
-    const [teamDescription, setTeamDescription] = useState("");
     const [teamMember, setTeamMember] = useState("");
     const [members, setMembers] = useState([]);
+
+    const router = useRouter();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
             teamName: "",
-            teamDescription: "",
-            teamMembers: []
+            teamDescription: ""
         }
     });
 
-    function onSubmit(values) {
+    function addMember() {
+        setTeamMember("");
+        if (members.includes(teamMember)) {
+            return;
+        }
+        setMembers([...members, teamMember]);
+    };
+
+    async function onSubmit(values) {
+        // const createTeam = await axios.post("", {}, {
+        //     method: "POST"
+        // });
         console.log(values);
+        router.reload();
     };
 
     return (
@@ -58,10 +70,7 @@ export default function TeamCreatePage() {
                                         {...field}
                                         id="teamName"
                                         placeholder="팀명을 입력하세요"
-                                        value={teamName}
-                                        onChange={(e) => {
-                                            setTeamName(e.target.value);
-                                        }}
+                                        className="rounded-sm"
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -79,49 +88,58 @@ export default function TeamCreatePage() {
                                         {...field}
                                         id="teamDescription"
                                         placeholder="설명을 입력하세요"
-                                        className="resize-none"
-                                        value={teamDescription}
-                                        onChange={(e) => {
-                                            setTeamDescription(e.target.value);
-                                        }}
+                                        className="resize-none rounded-sm"
                                     />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
-                    <FormField
-                        control={form.control}
-                        name="teamMembers"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>팀원 추가</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        id="teamMembers"
-                                        placeholder="추가할 팀원의 이메일 주소를 입력해주세요"
-                                        onChange={(e) => {
-                                            setTeamMember(e.target.value);
-                                        }}
-                                        value={teamMember}
-                                    />
-                                </FormControl>
-                                {/* {members.map((member, index) => ( */}
+                    <div className="relative">
+                        <Label htmlFor="teamMembers">팀원 추가</Label>
+                        <Input
+                            id="teamMembers"
+                            placeholder="추가할 팀원의 이메일 주소를 입력해주세요"
+                            onChange={(e) => {
+                                setTeamMember(e.target.value);
+                            }}
+                            value={teamMember}
+                            className="rounded-sm my-2"
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    addMember();
+                                };
+                            }}
+                        />
+                        {teamMember.length > 0 && (
+                            <div
+                                className="absolute top-[69px] left-0 right-0 bg-gray-100 p-2"
+                                onClick={addMember}
+                            >
+                                {teamMember}
+                            </div>
+                        )}
+                        <div className="w-full flex gap-2 flex-wrap">
+                            {members.length > 0 &&
+                                members.map((member, index) => (
                                     <Badge
-                                        // key={index}
+                                        key={index}
                                         variant="secondary"
                                         className="w-fit flex items-center gap-2"
                                     >
-                                        {/* {member} */}
-                                        {teamMember}
-                                        <X className="w-3 h-3" />
+                                        {member}
+                                        <X
+                                            className="w-3 h-3"
+                                            onClick={() => {
+                                                setMembers(members.filter((m) => m !== member));
+                                            }}
+                                        />
                                     </Badge>
-                                {/* ))} */}
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                                ))
+                            }
+                        </div>
+                    </div>
                     <div className="w-full flex justify-end">
                         <Button
                             type="submit"

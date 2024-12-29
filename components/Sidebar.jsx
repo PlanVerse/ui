@@ -10,8 +10,13 @@ import {
     SidebarGroupLabel
 } from "./ui/sidebar";
 import Link from "next/link";
+import { headers } from "next/headers";
 
 export default async function Sidebar() {
+    const headersList = await headers();
+    const headerUrl = headersList && headersList.get("X-Url") || "";
+    console.log("headerUrl: ", headerUrl);
+
     return (
         <ShadcnSidebar>
             <SidebarContent>
@@ -26,19 +31,19 @@ export default async function Sidebar() {
                             </SidebarGroupLabel>
                             <CollapsibleContent>
                                 <SidebarMenuSub>
-                                    <Link href="/team" className="hover:cursor-pointer">
-                                        <SidebarMenuSubItem className="text-white">
+                                    <Link href="/team/list" className="cursor-pointer">
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/list") ? "text-primary-500 bg-white font-semibold" : ""}`}>
                                             팀 목록
                                         </SidebarMenuSubItem>
                                     </Link>
-                                    <Link href="/team/create" className="hover:cursor-pointer">
-                                        <SidebarMenuSubItem className="text-white">
+                                    <Link href="/team/create" className="cursor-pointer">
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/create") ? "text-primary-500 bg-white font-semibold" : ""}`}>
                                             팀 생성
                                         </SidebarMenuSubItem>
                                     </Link>
-                                    <Link href="/team/add-user" className="hover:cursor-pointer">
-                                        <SidebarMenuSubItem className="text-white">
-                                            팀원 추가
+                                    <Link href="/team/management" className="cursor-pointer">
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/member") ? "text-primary-500 bg-white font-semibold" : ""}`}>
+                                            팀 관리
                                         </SidebarMenuSubItem>
                                     </Link>
                                 </SidebarMenuSub>
@@ -57,19 +62,19 @@ export default async function Sidebar() {
                             </SidebarGroupLabel>
                             <CollapsibleContent>
                                 <SidebarMenuSub>
-                                    <Link href="/project" className="hover:cursor-pointer">
-                                        <SidebarMenuSubItem className="text-white">
+                                    <Link href="/project" className="cursor-pointer">
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/project") ? "text-primary-500 bg-white font-semibold" : ""}`}>
                                             프로젝트 목록
                                         </SidebarMenuSubItem>
                                     </Link> 
-                                    <Link href="/project/create" className="hover:cursor-pointer">   
-                                        <SidebarMenuSubItem className="text-white">
+                                    <Link href="/project/create" className="cursor-pointer">   
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/project/create") ? "text-primary-500 bg-white font-semibold" : ""}`}>
                                             프로젝트 생성
                                         </SidebarMenuSubItem>
                                     </Link>
-                                    <Link href="/project/member" className="hover:cursor-pointer">
-                                        <SidebarMenuSubItem className="text-white">
-                                            인원 추가
+                                    <Link href="/project/management" className="cursor-pointer">
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/project/member") ? "text-primary-500 bg-white font-semibold" : ""}`}>
+                                            프로젝트 관리
                                         </SidebarMenuSubItem>
                                     </Link>
                                 </SidebarMenuSub>

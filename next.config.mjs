@@ -12,7 +12,15 @@ const nextConfig = {
       },
     ];
   },
-
+  async redirects() {
+    return [
+      {
+        source: '/team',
+        destination: '/team/list',
+        permanent: true
+      }
+    ]
+  },
   async headers() {
     return [
       {
