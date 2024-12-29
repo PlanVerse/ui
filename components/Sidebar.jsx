@@ -57,15 +57,21 @@ export default async function Sidebar() {
                             </SidebarGroupLabel>
                             <CollapsibleContent>
                                 <SidebarMenuSub>
-                                    <SidebarMenuSubItem className="text-white">
-                                        프로젝트 목록
-                                    </SidebarMenuSubItem>
-                                    <SidebarMenuSubItem className="text-white">
-                                        프로젝트 생성
-                                    </SidebarMenuSubItem>
-                                    <SidebarMenuSubItem className="text-white">
-                                        인원 추가
-                                    </SidebarMenuSubItem>
+                                    <Link href="/project" className="hover:cursor-pointer">
+                                        <SidebarMenuSubItem className="text-white">
+                                            프로젝트 목록
+                                        </SidebarMenuSubItem>
+                                    </Link> 
+                                    <Link href="/project/create" className="hover:cursor-pointer">   
+                                        <SidebarMenuSubItem className="text-white">
+                                            프로젝트 생성
+                                        </SidebarMenuSubItem>
+                                    </Link>
+                                    <Link href="/project/member" className="hover:cursor-pointer">
+                                        <SidebarMenuSubItem className="text-white">
+                                            인원 추가
+                                        </SidebarMenuSubItem>
+                                    </Link>
                                 </SidebarMenuSub>
                             </CollapsibleContent>
                         </SidebarGroup>
