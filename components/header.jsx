@@ -9,9 +9,12 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ProfileDropDown } from "@/components/profile-drop-down";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function Header({ token }) {
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,7 +27,7 @@ export default function Header({ token }) {
 
   return (
     <header className={cn(
-      `fixed top-0 ${token ? "left-[255px]" : "left-[255px]"} right-0 z-50 transition-all duration-200`,
+      `fixed top-0 ${token ? "left-[255px]" : "w-full"} right-0 z-50 transition-all duration-200`,
       isScrolled ? "bg-background/80 backdrop-blur-sm shadow-sm" : "bg-transparent",
     )}>
       <div className="container mx-auto px-4">
@@ -45,8 +48,8 @@ export default function Header({ token }) {
           <div className="ml-auto flex gap-2 items-center">
             {token ? (
               <ProfileDropDown />
-            ) : (
-              <Link href="/signin" className="flex items-center space-x-2">
+            ) : (!pathname.includes("/signin") && !pathname.includes("/signup")) && (
+              <Link href="/account/signin" className="flex items-center space-x-2">
                 <Button variant="outline">Log in</Button>
               </Link>
             )}
