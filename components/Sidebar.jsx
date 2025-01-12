@@ -62,8 +62,8 @@ export default async function Sidebar() {
                             </SidebarGroupLabel>
                             <CollapsibleContent>
                                 <SidebarMenuSub>
-                                    <Link href="/project" className="cursor-pointer">
-                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/project") ? "text-primary-500 bg-white font-semibold" : ""}`}>
+                                    <Link href="/project/list" className="cursor-pointer">
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/project/list") ? "text-primary-500 bg-white font-semibold" : ""}`}>
                                             프로젝트 목록
                                         </SidebarMenuSubItem>
                                     </Link> 

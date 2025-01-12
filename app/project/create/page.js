@@ -14,6 +14,15 @@ export default function ProjectCreatePage() {
   const [projectMember, setProjectMember] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [members, setMembers] = useState([]);
+
+function addMember() {
+    setProjectMember("");
+    if (members.includes(projectMember)) {
+        return;
+    }
+    setMembers([...members, projectMember]);
+};
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -63,7 +72,7 @@ export default function ProjectCreatePage() {
                     required
                 />
                 </div>
-                <div>
+                <div className="relative">
                     <label htmlFor="projectMember">
                         프로젝트 인원 추가
                     </label>
@@ -72,33 +81,54 @@ export default function ProjectCreatePage() {
                     type = "text"
                     placeholder = "추가할 인원의 이메일을 입력하세요"
                     value = {projectMember}
+                    className = "rounded-sm my-2"
                     onChange={(e) => setProjectMember(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            addMember();
+                        };
+                    }}
                     required
                 />
-                    {/* <Button
-                        type = "submit"
-                        className = "bg-primary-500"
-                    >
-                        추가
-                    </Button> */}
-                {/* {members.map((member, index) => ( */}
-                <Badge
-                    // key={index}
-                        variant="secondary"
-                        className="w-fit flex items-center gap-2"
-                >
-                    {/* {member} */}
-                        {projectMember}
-                        <X className="w-3 h-3" />
-                </Badge>
+                    {projectMember.length > 0 && (
+                            <div
+                                className="absolute top-[69px] left-0 right-0 bg-gray-100 p-2"
+                                onClick={addMember}
+                            >
+                                {projectMember}
+                            </div>
+                        )}
+                        <div className="w-full flex gap-2 flex-wrap">
+                            {members.length > 0 &&
+                                members.map((member, index) => (
+                                    <Badge
+                                        key={index}
+                                        variant="secondary"
+                                        className="w-fit flex items-center gap-2"
+                                    >
+                                        {member}
+                                        <X
+                                            className="w-3 h-3"
+                                            onClick={() => {
+                                                setMembers(members.filter((m) => m !== member));
+                                            }}
+                                        />
+                                    </Badge>
+                                ))
+                            }
+                        </div>
+
                 </div>
-                <Button 
-                    type="submit" 
-                    disabled={isLoading}
-                    className="bg-primary-500"
-                >
-                {isLoading ? '프로젝트 생성 중...' : '프로젝트 생성'}
-                </Button>
+                <div className="w-full flex justify-end">
+                    <Button 
+                        type="submit" 
+                        disabled={isLoading}
+                        className="bg-primary-500"
+                    >
+                    {isLoading ? '프로젝트 생성 중...' : '프로젝트 생성'}
+                    </Button>
+                </div>
             </form>
         </Form>
       {message && <p>{message}</p>}
