@@ -15,7 +15,6 @@ import { headers } from "next/headers";
 export default async function Sidebar() {
     const headersList = await headers();
     const headerUrl = headersList && headersList.get("X-Url") || "";
-    console.log("headerUrl: ", headerUrl);
 
     return (
         <ShadcnSidebar>

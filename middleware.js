@@ -1,32 +1,32 @@
 import { NextResponse } from "next/server";
 
-export default function middleware (request) {
+export default function middleware(request) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('X-Url', request.url);
 
-  // const token = request.cookies.token ?? null;
+  const token = request.cookies.token ?? null;
 
-  // const unprotectedPaths = [
-  //   "/signin",
-  //   "/signup"
-  // ];
-  // const isUnprotectedPath = unprotectedPaths.some(path => request.nextUrl.pathname === path);
+  const unprotectedPaths = [
+    "/account/signin",
+    "/account/signup"
+  ];
+  const isUnprotectedPath = unprotectedPaths.some(path => request.nextUrl.pathname === path);
 
-  // if (!isUnprotectedPath && !token) {
-  //   return NextResponse.redirect("/signin");
-  // } else if (isUnprotectedPath && !token) {
-  //   return NextResponse.redirect("/signin");
-  // } else if (isUnprotectedPath && token) {
-  //   return NextResponse.redirect("/");
-  // }
+  if (!isUnprotectedPath && !token) {
+    if (request.nextUrl.pathname !== "/") {
+      return NextResponse.redirect(new URL("/auth/signin", request.url));
+    };
+  } else if (isUnprotectedPath && token) {
+    return NextResponse.redirect(new URL("/", request.url));
+  };
 
   return NextResponse.next({
     request: {
       headers: requestHeaders
     }
-  })
-}
+  });
+};
 
-// export const config = {
-//   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
-// };
+export const config = {
+  matcher: ['/((?!api|.*\\..*|_next/static|_next/image|manifest.json|assets|favicon.ico).*)'],
+};

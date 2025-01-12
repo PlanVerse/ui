@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 const formSchema = z.object({
     teamName: z.string(),
     teamDescription: z.string().max(100)
-})
+});
 
 export default function TeamCreatePage() {
     const [teamMember, setTeamMember] = useState("");
