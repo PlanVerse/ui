@@ -7,14 +7,34 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 export default function ProjectCreatePage() {
-  const [projectName, setProjectName] = useState('');
-  const [projectDescription, setProjectDescription] = useState('');
+//   const [projectName, setProjectName] = useState('');
+//   const [projectDescription, setProjectDescription] = useState('');
   const [projectMember, setProjectMember] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState('');
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [message, setMessage] = useState('');
   const [members, setMembers] = useState([]);
+  const router = useRouter();
+  
+  const formSchema = z.object({
+    projectName: z.string(),
+    projectDescription: z.string().max(100),
+    })
+
+  const form = useForm({
+        resolver: zodResolver(formSchema),
+        defaultValues: {
+            projectName: "",
+            projectDescription: "",
+        }
+    });
 
 function addMember() {
     setProjectMember("");
@@ -24,58 +44,84 @@ function addMember() {
     setMembers([...members, projectMember]);
 };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setIsLoading(true);
-    setMessage('');
+async function onSubmit(values) {
+    // const createTeam = await axios.post("", {}, {
+    //     method: "POST"
+    // });
+    console.log(values);
+    // router.reload();
+    // router.push(router.asPath).then(() => window.scrollTo(0, 0));
+};
 
-    try {
-      const response = await axios.post('/api/create-project', {
-        name: projectName,
-        description: projectDescription,
-        member : projectMember,
-      });
-      setMessage(response.data.message);
-    } catch (error) {
-      setMessage('프로젝트 생성 중 오류가 발생했습니다.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+//   const handleSubmit = async (event) => {
+//     event.preventDefault();
+//     setIsLoading(true);
+//     setMessage('');
+
+//     // try {
+//     //   const response = await axios.post('/api/create-project', {
+//     //     name: projectName,
+//     //     description: projectDescription,
+//     //     member : projectMember,
+//     //   });
+//     //   setMessage(response.data.message);
+//     // } catch (error) {
+//     //   setMessage('프로젝트 생성 중 오류가 발생했습니다.');
+//     // } finally {
+//     //   setIsLoading(false);
+//     // }
+//    };
 
   return (
     <div>
         <h1 className="text-2xl font-bold mb-8">
             프로젝트 생성
         </h1>
-        <Form>
-            <form className="space-y-8 max-w-96 mx-auto" onSubmit={handleSubmit}>
-                <div>
-                <label htmlFor="projectName">프로젝트 이름</label>
-                <Input
-                    id = "projectName"
-                    type = "text"
-                    placeholder = "프로젝트명을 입력하세요"
-                    value = {projectName}
-                    onChange = {(e) => setProjectName(e.target.value)}
-                    required
+        <Form {...form}>
+            <form 
+                onSubmit={form.handleSubmit(onSubmit)} 
+                className="space-y-8 max-w-96 mx-auto"
+            >
+                <FormField 
+                    control={form.control}
+                    name="projectName"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>프로젝트 이름</FormLabel>
+                            <FormControl>
+                                <Input
+                                    {...field}
+                                    id="projectName"
+                                    placeholder="프로젝트명을 입력하세요"
+                                    className="rounded-sm"
+                                />
+                            </FormControl>
+                            <FormMessage />
+                    </FormItem>
+                    )}
                 />
-                </div>
-                <div>
-                <label htmlFor="projectDescription">프로젝트 설명</label>
-                <Input
-                    id = "projectDescription"
-                    type = "text"
-                    placeholder = "설명을 입력하세요"
-                    value = {projectDescription}
-                    onChange={(e) => setProjectDescription(e.target.value)}
-                    required
-                />
-                </div>
+                <FormField
+                    control={form.control}
+                    name="projectDescription"
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>프로젝트 설명</FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    {...field}
+                                    id="projectDescription"
+                                    placeholder="프로젝트 설명을 입력하세요"
+                                    className="resize-none rounded-sm"
+                                />
+                            </FormControl>
+                            <FormMessage />
+                    </FormItem>
+                    )}
+                />                    
                 <div className="relative">
-                    <label htmlFor="projectMember">
+                    <Label htmlFor="projectMember">
                         프로젝트 인원 추가
-                    </label>
+                    </Label>
                 <Input
                     id = "projectMember"
                     type = "text"
@@ -89,7 +135,6 @@ function addMember() {
                             addMember();
                         };
                     }}
-                    required
                 />
                     {projectMember.length > 0 && (
                             <div
@@ -122,16 +167,15 @@ function addMember() {
                 </div>
                 <div className="w-full flex justify-end">
                     <Button 
-                        type="submit" 
-                        disabled={isLoading}
+                        type="submit"
                         className="bg-primary-500"
                     >
-                    {isLoading ? '프로젝트 생성 중...' : '프로젝트 생성'}
+                    프로젝트 생성
                     </Button>
                 </div>
             </form>
         </Form>
-      {message && <p>{message}</p>}
+      {/* {message && <p>{message}</p>} */}
     </div>
   );
 }
