@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronDown } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible";
 import {
@@ -10,11 +12,15 @@ import {
     SidebarGroupLabel
 } from "./ui/sidebar";
 import Link from "next/link";
-import { headers } from "next/headers";
+// import { headers } from "next/headers";
+import { usePathname } from "next/navigation";
 
-export default async function Sidebar() {
-    const headersList = await headers();
-    const headerUrl = headersList && headersList.get("X-Url") || "";
+export default function Sidebar() {
+    // const headersList = headers();
+    // const headerUrl = headersList && headersList.get("X-Url") || "";
+    // console.log("headerUrl: ", headerUrl);
+    const pathname = usePathname();
+    const headerUrl = pathname;
 
     return (
         <ShadcnSidebar>
@@ -31,17 +37,17 @@ export default async function Sidebar() {
                             <CollapsibleContent>
                                 <SidebarMenuSub>
                                     <Link href="/team/list" className="cursor-pointer">
-                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/list") ? "text-primary-500 bg-white font-semibold" : ""}`}>
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/list") ? "text-primary-500 bg-white font-semibold" : "text-white"}`}>
                                             팀 목록
                                         </SidebarMenuSubItem>
                                     </Link>
                                     <Link href="/team/create" className="cursor-pointer">
-                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/create") ? "text-primary-500 bg-white font-semibold" : ""}`}>
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/create") ? "text-primary-500 bg-white font-semibold" : "text-white"}`}>
                                             팀 생성
                                         </SidebarMenuSubItem>
                                     </Link>
                                     <Link href="/team/management" className="cursor-pointer">
-                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/member") ? "text-primary-500 bg-white font-semibold" : ""}`}>
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/member") ? "text-primary-500 bg-white font-semibold" : "text-white"}`}>
                                             팀 관리
                                         </SidebarMenuSubItem>
                                     </Link>
@@ -61,8 +67,8 @@ export default async function Sidebar() {
                             </SidebarGroupLabel>
                             <CollapsibleContent>
                                 <SidebarMenuSub>
-                                    <Link href="/project/list" className="cursor-pointer">
-                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/project/list") ? "text-primary-500 bg-white font-semibold" : ""}`}>
+                                    <Link href="/project" className="cursor-pointer">
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/project") ? "text-primary-500 bg-white font-semibold" : ""}`}>
                                             프로젝트 목록
                                         </SidebarMenuSubItem>
                                     </Link> 
@@ -83,5 +89,5 @@ export default async function Sidebar() {
                 </SidebarMenu>
             </SidebarContent>
         </ShadcnSidebar>
-    )
+    );
 };

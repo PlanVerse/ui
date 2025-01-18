@@ -4,7 +4,7 @@ export default function middleware(request) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('X-Url', request.url);
 
-  const token = request.cookies.token ?? null;
+  const token = request.cookies.get("token") ?? null;
 
   const unprotectedPaths = [
     "/account/signin",
@@ -14,7 +14,7 @@ export default function middleware(request) {
 
   if (!isUnprotectedPath && !token) {
     if (request.nextUrl.pathname !== "/") {
-      return NextResponse.redirect(new URL("/auth/signin", request.url));
+      return NextResponse.redirect(new URL("/account/signin", request.url));
     };
   } else if (isUnprotectedPath && token) {
     return NextResponse.redirect(new URL("/", request.url));
