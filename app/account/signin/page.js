@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import Link from "next/link";
 
 const formSchema = z.object({
   email: z.string({
@@ -104,6 +105,15 @@ export default function SignInPage() {
                 )}
               />
               <div className="w-full flex justify-end">
+                <Button
+                  className="bg-primary-500"
+                >
+                  <Link href ="/account/signup"
+                    className="cursor-pointer"
+                  >
+                    회원가입
+                  </Link>
+                </Button>
                 <Button
                   type="submit"
                   className="bg-primary-500"

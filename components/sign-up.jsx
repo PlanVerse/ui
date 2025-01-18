@@ -10,31 +10,53 @@ export function SignUp() {
   return (
     (<Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Create an account</CardTitle>
+        <CardTitle className="text-2xl">계정 생성하기</CardTitle>
         <CardDescription>
-          Enter your email below to Sign In to your account
+          계정을 생성하기 위해 아래 있는 정보를 입력하세요
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="seg00@playground.com" required />
+            <Label htmlFor="email">이메일</Label>
+            <Input id="email" type="email" placeholder="이메일을 입력하세요" className="rounded-sm" required />
           </div>
           <div className="grid gap-2">
             <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">비밀번호</Label>
             </div>
-            <Input id="password" type="password" required />
+              <Input 
+                id="password" 
+                type="password" 
+                placeholder="비밀번호를 입력하세요" 
+                className="rounded-sm" 
+                required 
+              />
           </div>
-          <Button type="submit" className="w-full">
-            Create an account
+          <div className="grid gap-2">    
+            <div className="flex items-center">
+              <Label htmlfor="passwordConfirm">비밀번호 확인</Label>
+            </div>
+              <Input 
+                id="passwordConfirm" 
+                type="passowrd" 
+                placeholder="비밀번호를 한 번 더 입력하세요" 
+                className="rounded-sm" 
+                required 
+              />
+          </div>
+          <Button 
+            type="submit" 
+            className="w-full
+                      bg-primary-500"
+          >
+            회원가입
           </Button>
         </div>
         <div className="mt-4 text-center text-sm">
-          Already have an account?{" "}
+          이미 계정이 있으신가요?{" "}
           <Link href={"/auth/signin"} className="underline">
-            Sign In
+            로그인
           </Link>
         </div>
       </CardContent>
