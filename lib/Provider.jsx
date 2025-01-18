@@ -1,15 +1,16 @@
+"use client";
+
 import Sidebar from "@/components/Sidebar";
 import { ThemeProvider } from "@/components/theme-provider";
-import { headers } from "next/headers";
 // import { getSession } from "./session";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { usePathname } from "next/navigation";
 
-export default async function Provider({ children }) {
-    const headersList = await headers();
-    const headerUrl = headersList && headersList.get("X-Url") || "";
-    const isHideSidebar = headerUrl === `${process.env.BASE_URL}/` ||
-        headerUrl.includes("/account/signin") ||
-        headerUrl.includes("/account/signup");
+export default function Provider({ children }) {
+    const pathname = usePathname();
+    const isHideSidebar = pathname === `/` ||
+        pathname.includes("/account/signin") ||
+        pathname.includes("/account/signup");
 
     // const token = await getSession();
     
