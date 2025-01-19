@@ -9,27 +9,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import React from "react";
 import Link from "next/link";
-import axios from "axios";
 import { getSession, removeSession } from "@/lib/session";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { postApi } from "@/lib/axios";
 
 export function ProfileDropDown() {
+  const router = useRouter();
+
   const handleLogout = async () => {
     try {
       const token = await getSession();
-      const requestLogout = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign-out`, null, {
+      await postApi(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign-out`, null, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      if (requestLogout.status !== 200) {
-        return alert(requestLogout.data.message);
-      };
       await removeSession();
       alert("로그아웃 되었습니다");
-      redirect("/account/signin");
+      router.replace("/account/signin");
     } catch (error) {
-      console.error("Logout failed:", error);
       alert("로그아웃 중 오류가 발생했습니다.");
     };
   };
