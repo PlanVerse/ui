@@ -15,17 +15,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
 export default function ProjectCreatePage() {
-//   const [projectName, setProjectName] = useState('');
-//   const [projectDescription, setProjectDescription] = useState('');
   const [projectMember, setProjectMember] = useState('');
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [message, setMessage] = useState('');
   const [members, setMembers] = useState([]);
   const router = useRouter();
   
   const formSchema = z.object({
-    projectName: z.string(),
-    projectDescription: z.string().max(100),
+    projectName: z.string({
+        // invalid_type_error: '프로젝트 이름을 다시 입력하세요'
+    }),
+    projectDescription: z.string({
+        // invalid_type_error: '프로젝트 설명을 다시 입력하세요'
+    }).max(100),
+    // projectMember: z.string().email(),
     })
 
   const form = useForm({
@@ -36,41 +37,21 @@ export default function ProjectCreatePage() {
         }
     });
 
-function addMember() {
-    setProjectMember("");
-    if (members.includes(projectMember)) {
-        return;
-    }
-    setMembers([...members, projectMember]);
-};
+    function addMember() {
+        setProjectMember("");
+        if (members.includes(projectMember)) {
+            return;
+        }
+        setMembers([...members, projectMember]);
+    };
 
-async function onSubmit(values) {
-    // const createTeam = await axios.post("", {}, {
-    //     method: "POST"
-    // });
-    console.log(values);
-    // router.reload();
-    // router.push(router.asPath).then(() => window.scrollTo(0, 0));
-};
-
-//   const handleSubmit = async (event) => {
-//     event.preventDefault();
-//     setIsLoading(true);
-//     setMessage('');
-
-//     // try {
-//     //   const response = await axios.post('/api/create-project', {
-//     //     name: projectName,
-//     //     description: projectDescription,
-//     //     member : projectMember,
-//     //   });
-//     //   setMessage(response.data.message);
-//     // } catch (error) {
-//     //   setMessage('프로젝트 생성 중 오류가 발생했습니다.');
-//     // } finally {
-//     //   setIsLoading(false);
-//     // }
-//    };
+    async function onSubmit(values) {
+        // const createTeam = await axios.post("", {}, {
+        //     method: "POST"
+        // });
+        console.log(values);
+        // router.reload();
+    };
 
   return (
     <div>
@@ -170,12 +151,11 @@ async function onSubmit(values) {
                         type="submit"
                         className="bg-primary-500"
                     >
-                    프로젝트 생성
+                        프로젝트 생성
                     </Button>
                 </div>
             </form>
         </Form>
-      {/* {message && <p>{message}</p>} */}
     </div>
   );
 }
