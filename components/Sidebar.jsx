@@ -47,7 +47,7 @@ export default function Sidebar() {
                                         </SidebarMenuSubItem>
                                     </Link>
                                     <Link href="/team/management" className="cursor-pointer">
-                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/member") ? "text-primary-500 bg-white font-semibold" : "text-white"}`}>
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/management") ? "text-primary-500 bg-white font-semibold" : "text-white"}`}>
                                             팀 관리
                                         </SidebarMenuSubItem>
                                     </Link>
@@ -67,18 +67,18 @@ export default function Sidebar() {
                             </SidebarGroupLabel>
                             <CollapsibleContent>
                                 <SidebarMenuSub>
-                                    <Link href="/project" className="cursor-pointer">
-                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/project") ? "text-primary-500 bg-white font-semibold" : ""}`}>
+                                    <Link href="/project/list" className="cursor-pointer">
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white hover:text-primary-500 transition-all ${headerUrl.includes("/project/list") ? "text-primary-500 bg-white font-semibold" : "text-white"}`}>
                                             프로젝트 목록
                                         </SidebarMenuSubItem>
                                     </Link> 
                                     <Link href="/project/create" className="cursor-pointer">   
-                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/project/create") ? "text-primary-500 bg-white font-semibold" : ""}`}>
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white hover:text-primary-500 transition-all ${headerUrl.includes("/project/create") ? "text-primary-500 bg-white font-semibold" : "text-white"}`}>
                                             프로젝트 생성
                                         </SidebarMenuSubItem>
                                     </Link>
                                     <Link href="/project/management" className="cursor-pointer">
-                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white text-white hover:text-primary-500 transition-all ${headerUrl.includes("/project/member") ? "text-primary-500 bg-white font-semibold" : ""}`}>
+                                        <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white hover:text-primary-500 transition-all ${headerUrl.includes("/project/management") ? "text-primary-500 bg-white font-semibold" : "text-white"}`}>
                                             프로젝트 관리
                                         </SidebarMenuSubItem>
                                     </Link>

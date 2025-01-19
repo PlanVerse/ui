@@ -1,5 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getAvatarFallback } from "@/lib/avatar";
+import { getApi } from "@/lib/axios";
 import { getSession } from "@/lib/session";
 import { teamListMock } from "@/mock/team";
 import { redirect } from "next/navigation";
@@ -16,10 +17,17 @@ const bgColors = [
 ]
 
 export default async function Page() {
-    // const token = await getSession();
-    // if (!token) {
-    //     return redirect("/");
-    // };
+    const token = await getSession();
+    const requestTeamList = await getApi(`${process.env.API_URL}/team/list/creator?page=1`, null, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    const teamList = requestTeamList.data.content;
+    if (teamList.length === 0) {
+        return redirect(`/team/create`);
+    };
 
     return (
         <>

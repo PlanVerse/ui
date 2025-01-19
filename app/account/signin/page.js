@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { getApi, postApi } from "@/lib/axios";
@@ -60,7 +60,7 @@ export default function SignInPage() {
 
   return (
     <div className="w-full flex h-screen w-full items-center justify-center px-4">
-      <Card className="w-full max-w-96">
+      <Card className="w-full max-w-96 overflow-hidden">
         <CardHeader>
           <CardTitle className="text-2xl">
             로그인
@@ -82,7 +82,6 @@ export default function SignInPage() {
                       <Input
                         {...field}
                         id="email"
-                        placeholder="이메일"
                         className="rounded-sm"
                       />
                     </FormControl>
@@ -100,7 +99,6 @@ export default function SignInPage() {
                       <Input
                         {...field}
                         id="password"
-                        placeholder="비밀번호"
                         className="rounded-sm"
                         type="password"
                       />
@@ -111,15 +109,6 @@ export default function SignInPage() {
               />
               <div className="w-full flex justify-end">
                 <Button
-                  className="bg-primary-500"
-                >
-                  <Link href ="/account/signup"
-                    className="cursor-pointer"
-                  >
-                    회원가입
-                  </Link>
-                </Button>
-                <Button
                   type="submit"
                   className="bg-primary-500"
                 >
@@ -129,6 +118,12 @@ export default function SignInPage() {
             </form>
           </Form>
         </CardContent>
+        <CardFooter className="bg-secondary-100 justify-center text-sm py-3">
+          아직 계정이 없으신가요?&nbsp;
+          <Link href={"/account/signup"} className="underline text-primary-500">
+            회원가입
+          </Link>
+        </CardFooter>
       </Card>
     </div>
   );
