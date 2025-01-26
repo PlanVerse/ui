@@ -10,7 +10,7 @@ export default function TeamMemberPage() {
     return (
         <>
             <h1 className="text-2xl font-bold mb-8">
-                팀원 추가
+                팀 관리
             </h1>
         </>
     )
