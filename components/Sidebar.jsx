@@ -46,11 +46,11 @@ export default function Sidebar() {
                                             팀 생성
                                         </SidebarMenuSubItem>
                                     </Link>
-                                    <Link href="/team/management" className="cursor-pointer">
+                                    {/* <Link href="/team/management" className="cursor-pointer">
                                         <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white hover:text-primary-500 transition-all ${headerUrl.includes("/team/management") ? "text-primary-500 bg-white font-semibold" : "text-white"}`}>
                                             팀 관리
                                         </SidebarMenuSubItem>
-                                    </Link>
+                                    </Link> */}
                                 </SidebarMenuSub>
                             </CollapsibleContent>
                         </SidebarGroup>
@@ -77,11 +77,11 @@ export default function Sidebar() {
                                             프로젝트 생성
                                         </SidebarMenuSubItem>
                                     </Link>
-                                    <Link href="/project/management" className="cursor-pointer">
+                                    {/* <Link href="/project/management" className="cursor-pointer">
                                         <SidebarMenuSubItem className={`px-2 py-1 hover:bg-white hover:text-primary-500 transition-all ${headerUrl.includes("/project/management") ? "text-primary-500 bg-white font-semibold" : "text-white"}`}>
                                             프로젝트 관리
                                         </SidebarMenuSubItem>
-                                    </Link>
+                                    </Link> */}
                                 </SidebarMenuSub>
                             </CollapsibleContent>
                         </SidebarGroup>

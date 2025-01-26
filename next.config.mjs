@@ -3,12 +3,12 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
 
+  // TODO: proxy 설정 필요
   // async rewrites() {
   //   return [
   //     {
-  //       source: "/api/:path*",
-  //       // TODO 하드코딩 수정 필요
-  //       destination: "http://localhost:50030/api/v1/:path*",
+  //       source: '/redis/:path*',
+  //       destination: "http://172.12.0.1:4949/redis/:path*",
   //     },
   //   ];
   // },
