@@ -60,7 +60,10 @@ export default function ProjectCreatePage() {
         </h1>
         <Form {...form}>
             <form 
-                onSubmit={form.handleSubmit(onSubmit)} 
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    form.handleSubmit(onSubmit)(e);
+                }}
                 className="space-y-8 max-w-96 mx-auto"
             >
                 <FormField 

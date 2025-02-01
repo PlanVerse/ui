@@ -1,10 +1,10 @@
 "use client";
 
-import Typewriter from "typewriter-effect";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart2, Calendar, CheckCircle, Users } from "lucide-react";
-import Link from "next/link";
-import PrimaryButton from "@/components/PrimaryButton";
+// import Typewriter from "typewriter-effect";
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+// import { BarChart2, Calendar, CheckCircle, Users } from "lucide-react";
+// import Link from "next/link";
+// import PrimaryButton from "@/components/PrimaryButton";
 
 const Section = ({ bgColor, children }) => (
   <section className={`w-full h-dvh ${bgColor} flex items-center justify-center gap-4 text-secondary-500 px-6`}>

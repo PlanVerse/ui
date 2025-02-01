@@ -16,25 +16,81 @@ const bgColors = [
     "bg-pink-400",
     "bg-teal-400",
     "bg-cyan-400",
-]
+];
+
+const TeamTable = ({ list }) => (
+    <div className="border rounded-md overflow-hidden">
+        <Table>
+            <TableHeader>
+                <TableRow className="bg-gray-100">
+                    <TableHead className="text-center border-r">
+                        팀 이름
+                    </TableHead>
+                    <TableHead className="text-center border-r">
+                        설명
+                    </TableHead>
+                    <TableHead className="text-center">
+                        팀원
+                    </TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {list.map((team) => (
+                    <TableRow key={team.id}>
+                        <TableCell className="text-center border-r">
+                            {team.name}
+                        </TableCell>
+                        <TableCell className="text-center border-r">
+                            {team.description}
+                        </TableCell>
+                        <TableCell className="text-center flex">
+                            {team.teamMemberInfos.length > 0 && team.teamMemberInfos.map((member, index) => (
+                                <div key={`${member.id}_${index}`} className={`w-10 h-10 text-sm ${bgColors[Math.floor(Math.random() * bgColors.length)]} text-white rounded-full flex items-center justify-center font-semibold`}>
+                                    {getAvatarFallback(member.username)}
+                                </div>
+                            ))}
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    </div>
+)
 
 export default async function Page() {
     const token = await getSession();
 
-    let teamList = [];
+    let createdTeamList = [];
+    let joinedTeamList = [];
 
-    const requestTeamList = await getApi(`${process.env.API_URL}/team/list/creator?page=1`, null, {
+    const requestCreatedTeamList = await getApi(`${process.env.API_URL}/team/list/creator?page=1`, null, {
         headers: {
             Authorization: `Bearer ${token}`
         }
-    }).catch(async (error) => {
-        if (error.status === 401) {
-            await removeSession();
-        }
-    });
+    })
+        .catch(async (error) => {
+            if (error.status === 401) {
+                await removeSession();
+            }
+        });
 
-    if (requestTeamList && requestTeamList.ok && requestTeamList.data.content.length > 0) {
-        teamList = requestTeamList.data.content;
+    const requestJoinedTeamList = await getApi(`${process.env.API_URL}/team/list/member`, null, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .catch(async (error) => {
+            if (error.status === 401) {
+                await removeSession();
+            }
+        });
+
+    if (requestCreatedTeamList.data.content.length > 0) {
+        createdTeamList.push(...requestCreatedTeamList.data.content);
+    };
+
+    if (requestJoinedTeamList.data.content.length > 0) {
+        joinedTeamList.push(...requestJoinedTeamList.data.content);
     };
 
     return (
@@ -42,44 +98,21 @@ export default async function Page() {
             <h1 className="text-2xl font-bold mb-8">
                 팀 목록
             </h1>
-            {teamList.length > 0 ?
-                <div className="border rounded-md overflow-hidden">
-                    <Table>
-                        <TableHeader>
-                            <TableRow className="bg-gray-100">
-                                <TableHead className="text-center border-r">
-                                    팀 이름
-                                </TableHead>
-                                <TableHead className="text-center border-r">
-                                    설명
-                                </TableHead>
-                                <TableHead className="text-center">
-                                    팀원
-                                </TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {teamList.map((team) => (
-                                <TableRow key={team.id}>
-                                    <TableCell className="text-center border-r">
-                                        {team.name}
-                                    </TableCell>
-                                    <TableCell className="text-center border-r">
-                                        {team.description}
-                                    </TableCell>
-                                    <TableCell className="text-center flex">
-                                        {team.members.length > 0 && team.members.map((member, index) => (
-                                            <div key={`${member.id}_${index}`} className={`w-10 h-10 text-sm ${bgColors[Math.floor(Math.random() * bgColors.length)]} text-white rounded-full flex items-center justify-center font-semibold`}>
-                                                {getAvatarFallback(member.name)}
-                                            </div>
-                                        ))}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </div>
-            :
+            <h2 className="text-xl font-semibold mb-8">
+                생성한 팀
+            </h2>
+            {createdTeamList.length > 0 &&
+                <TeamTable list={createdTeamList} />
+            }
+            <div className="h-px bg-gray-200 my-8"></div>
+            <h2 className="text-xl font-semibold mb-8">
+                소속된 팀
+            </h2>
+            {joinedTeamList.length > 0 &&
+                <TeamTable list={joinedTeamList} />
+            }
+            {/* TODO: 권한애 따라 empty text 변경 */}
+            {createdTeamList.length === 0 && joinedTeamList.length === 0 &&
                 <div className="w-full h-[calc(100vh-176px)] flex flex-col gap-4 items-center justify-center">
                     <p className="w-fit">
                         소속된 팀이 없습니다

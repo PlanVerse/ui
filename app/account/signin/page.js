@@ -69,7 +69,10 @@ export default function SignInPage() {
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit(onSubmit)(e);
+              }}
               className="space-y-8"
             >
               <FormField
