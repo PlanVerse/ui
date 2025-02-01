@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import Link from 'next/link';
 
 export default function ProjectCreatePage() {
   const [projectMember, setProjectMember] = useState('');
@@ -22,7 +23,7 @@ export default function ProjectCreatePage() {
   const formSchema = z.object({
     projectName: z.string({
         // invalid_type_error: '프로젝트 이름을 다시 입력하세요'
-    }),
+    }).min(3),
     projectDescription: z.string({
         // invalid_type_error: '프로젝트 설명을 다시 입력하세요'
     }).max(100),
@@ -150,12 +151,16 @@ export default function ProjectCreatePage() {
 
                 </div>
                 <div className="w-full flex justify-end">
-                    <Button 
-                        type="submit"
-                        className="bg-primary-500"
+                    <Link
+                        href="/project/list"
                     >
-                        프로젝트 생성
-                    </Button>
+                        <Button 
+                            type="submit"
+                            className="bg-primary-500"
+                        >
+                            프로젝트 생성
+                        </Button>
+                    </Link>
                 </div>
             </form>
         </Form>

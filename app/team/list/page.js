@@ -8,15 +8,34 @@ import Link from "next/link";
 // import { redirect } from "next/navigation";
 
 const bgColors = [
-    "bg-red-400",
-    "bg-blue-400",
-    "bg-green-400",
-    "bg-yellow-400",
-    "bg-slate-400",
-    "bg-pink-400",
-    "bg-teal-400",
-    "bg-cyan-400",
+  "red",
+  "orange",
+  "amber",
+  "yellow",
+  "lime",
+  "green",
+  "emerald",
+  "teal",
+  "cyan",
+  "sky",
+  "blue",
+  "indigo",
+  "violet",
+  "purple",
+  "fuchsia",
+  "pink",
+  "rose",
+  "slate",
+  "gray",
+  "zinc",
+  "neutral",
+  "stone",
 ];
+const colorLevel = [
+  50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950
+];
+
+const randomBgColors = `bg-${bgColors[Math.floor(Math.random() * bgColors.length)]}-${colorLevel[Math.floor(Math.random() * colorLevel.length)]}`;
 
 const TeamTable = ({ list }) => (
     <div className="border rounded-md overflow-hidden">
@@ -45,7 +64,7 @@ const TeamTable = ({ list }) => (
                         </TableCell>
                         <TableCell className="text-center flex">
                             {team.teamMemberInfos.length > 0 && team.teamMemberInfos.map((member, index) => (
-                                <div key={`${member.id}_${index}`} className={`w-10 h-10 text-sm ${bgColors[Math.floor(Math.random() * bgColors.length)]} text-white rounded-full flex items-center justify-center font-semibold`}>
+                                <div key={`${member.id}_${index}`} className={`w-10 h-10 text-sm ${randomBgColors} text-white rounded-full flex items-center justify-center font-semibold`}>
                                     {getAvatarFallback(member.username)}
                                 </div>
                             ))}
