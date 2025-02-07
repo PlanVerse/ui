@@ -8,17 +8,16 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { X } from 'lucide-react';
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import Link from 'next/link';
+// import { useRouter } from 'next/navigation'; 
 
 export default function ProjectCreatePage() {
   const [projectMember, setProjectMember] = useState('');
   const [members, setMembers] = useState([]);
-  const router = useRouter();
+  // const router = useRouter();
   
   const formSchema = z.object({
     projectName: z.string({
@@ -47,7 +46,7 @@ export default function ProjectCreatePage() {
     };
 
     async function onSubmit(values) {
-        // const createTeam = await axios.post("", {}, {
+        // const createProject = await axios.post("", {}, {
         //     method: "POST"
         // });
         console.log(values);
@@ -151,16 +150,13 @@ export default function ProjectCreatePage() {
 
                 </div>
                 <div className="w-full flex justify-end">
-                    <Link
-                        href="/project/list"
-                    >
                         <Button 
                             type="submit"
                             className="bg-primary-500"
+                            // onClick={() => window.location.reload()}
                         >
                             프로젝트 생성
                         </Button>
-                    </Link>
                 </div>
             </form>
         </Form>
