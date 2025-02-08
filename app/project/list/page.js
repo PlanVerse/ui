@@ -3,8 +3,16 @@ import { getAvatarFallback } from "@/lib/avatar";
 // import { getSession, getApi } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import React from "react";
+// import useState from "react";
+
 
 // Todo: 권한에 따라 프로젝트 생성버튼이 있거나 없게 하기
+
+// const invalidProjectCreator = () => {
+//     // true면 관리자 false면 권한 없음
+//     const [projectCreatorInfos, setProjectCreatorInfos ] = useState(true);
+// }
 
 const ProjectTable = ({ plist }) => (
     <div className="border rounded-md overflow-hidden">
@@ -49,6 +57,7 @@ const ProjectTable = ({ plist }) => (
                 <Button
                     variant="outline"
                     className="bg-primary-500"
+                    // disabled={!invalidProjectCreator}
                 >
                 새 프로젝트 생성
                 </Button>
@@ -100,17 +109,17 @@ export default async function ProjectListPage() {
         <h1 className="text-2xl font-bold mb-8">
             프로젝트 목록
         </h1>
-        <h2 className="text-xl font-semibold mb-8">
-            생성한 프로젝트
-        </h2>
         {createdProjectList.length > 0 &&
+            <h2 className="text-xl font-semibold mb-8">
+                생성한 프로젝트
+            </h2> &&
             <ProjectTable list={createdProjectList} />
         }
         <div className="h-px bg-gray-200 my-8"></div>
-        <h2 className="text-xl font-semibold mb-8">
-            소속된 프로젝트
-        </h2>
         {joinedProjectList.length > 0 &&
+            <h2 className="text-xl font-semibold mb-8">
+                소속된 프로젝트
+            </h2> &&
             <ProjectTable list={joinedProjectList} />
         }
         {/* Todo: 권한에 따라 메시지와 버튼유무를 다르게 하기 */}
@@ -123,6 +132,7 @@ export default async function ProjectListPage() {
                     <Button
                         variant="outline"
                         className="bg-primary-500 text-white"
+                        // disabled={!invalidProjectCreator}
                     >
                         새 프로젝트 생성
                     </Button>
