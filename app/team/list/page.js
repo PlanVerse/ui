@@ -7,5 +7,5 @@ export default async function Page() {
 
     return (
         <TeamListPage token={token} />
-    );
-};
+    )
+}

@@ -12,13 +12,14 @@ import { X } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
+import { postApi } from "@/lib/axios";
 
 const formSchema = z.object({
     teamName: z.string(),
     teamDescription: z.string().max(100)
 });
 
-export default function TeamCreatePage() {
+export default function TeamCreatePage({ token }) {
     const [teamMember, setTeamMember] = useState("");
     const [members, setMembers] = useState([]);
 
@@ -40,12 +41,19 @@ export default function TeamCreatePage() {
         setMembers([...members, teamMember]);
     };
 
+    // TODO: onSubmit 동작 안하는 이슈 해결
     async function onSubmit(values) {
-        // const createTeam = await axios.post("", {}, {
-        //     method: "POST"
-        // });
         console.log(values);
-        router.reload();
+        await postApi(`/team`, {
+            name: values.teamName,
+            description: values.teamDescription,
+            invite: members
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        router.refresh();
     };
 
     return (
@@ -57,7 +65,7 @@ export default function TeamCreatePage() {
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
-                        form.handleSubmit(onSubmit)(e);
+                        form.handleSubmit(onSubmit);
                     }}
                     className="space-y-8 max-w-96 mx-auto"
                 >
@@ -145,7 +153,7 @@ export default function TeamCreatePage() {
                     <div className="w-full flex justify-end">
                         <Button
                             type="submit"
-                            className="bg-primary-500"
+                            className="bg-primary-500 hover:bg-primary-600"
                         >
                             팀 만들기
                         </Button>
