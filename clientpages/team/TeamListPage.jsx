@@ -3,17 +3,47 @@
 import DetailModal from "@/components/DetailModal";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import { getAvatarFallback } from "@/lib/avatar";
 import { getApi } from "@/lib/axios";
+import { zodResolver } from "@hookform/resolvers/zod";
 // import { teamListMock } from "@/mock/team";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const formSchema = z.object({
+    teamName: z.string({
+        message: "팀 이름을 입력해주세요"
+    }),
+    teamDescription: z.string().max(100, {
+        message: "설명은 최대 100자까지 입력할 수 있습니다"
+    })
+});
 
 const TeamTable = ({
     list,
-    setDetailModalIsOpen
+    setDetailModalIsOpen,
+    token,
+    setDetailModalTeam,
+    isCreator,
+    setIsCreator
 }) => {
+    const handleDetailModal = async (teamId) => {
+        setIsCreator(isCreator);
+        const requestTeamDetail = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/team/info/${teamId}`, null, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        setDetailModalTeam(requestTeamDetail.data);
+    };
+
     return (
         <div className="border rounded-md overflow-hidden">
             <Table>
@@ -41,7 +71,7 @@ const TeamTable = ({
                             {team.description}
                         </TableCell>
                         <TableCell className="text-center flex">
-                            {team.teamMemberInfos.length > 0 && team.teamMemberInfos.map((member, index) => (
+                            {team.teamMemberInfos && team.teamMemberInfos.length > 0 && team.teamMemberInfos.map((member, index) => (
                                 <div key={`${member.id}_${index}`} className={`w-10 h-10 text-sm border border-gray-400 rounded-full flex items-center justify-center font-semibold`}>
                                     {getAvatarFallback(member.username)}
                                 </div>
@@ -51,7 +81,10 @@ const TeamTable = ({
                             <Button
                                 variant="outline"
                                 className="bg-primary-500 text-white px-3"
-                                onClick={() => setDetailModalIsOpen(true)}
+                                onClick={() => {
+                                    handleDetailModal(team.id);
+                                    setDetailModalIsOpen(true);
+                                }}
                             >
                                 상세정보
                             </Button>
@@ -69,14 +102,29 @@ export default function TeamListPage({ token }) {
     const [createdTeamList, setCreatedTeamList] = useState([]);
     const [joinedTeamList, setJoinedTeamList] = useState([]);
     const [detailModalIsOpen, setDetailModalIsOpen] = useState(false);
+    const [detailModalTeam, setDetailModalTeam] = useState(null);
+    const [isCreator, setIsCreator] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+
+    const form = useForm({
+        resolver: zodResolver(formSchema),
+        values: {
+            teamName: detailModalTeam?.name || "",
+            teamDescription: detailModalTeam?.description || ""
+        }
+    });
 
     useEffect(() => {
         async function fetchTeamList() {
-            const requestCreatedTeamList = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/team/list/creator?page=1`, null, {
+            const requestCreatedTeamList = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/team/list/creator`, null, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
+
+            if (requestCreatedTeamList.status === 401) {
+                await removeSession();
+            };
 
             if (requestCreatedTeamList.data.content.length > 0) {
                 setCreatedTeamList(requestCreatedTeamList.data.content);
@@ -90,6 +138,10 @@ export default function TeamListPage({ token }) {
                 }
             });
 
+            if (requestJoinedTeamList.status === 401) {
+                await removeSession();
+            };
+
             if (requestJoinedTeamList.data.content.length > 0) {
                 setJoinedTeamList(requestJoinedTeamList.data.content);
             };
@@ -102,6 +154,10 @@ export default function TeamListPage({ token }) {
             setIsLoading(false);
         });
     }, []);
+
+    const onSubmit = (values) => {
+        console.log(values);
+    };
 
     if (isLoading) {
         return <Loading />
@@ -119,6 +175,10 @@ export default function TeamListPage({ token }) {
                 <TeamTable
                     list={createdTeamList}
                     setDetailModalIsOpen={setDetailModalIsOpen}
+                    token={token}
+                    setDetailModalTeam={setDetailModalTeam}
+                    isCreator={true}
+                    setIsCreator={setIsCreator}
                 />
             }
             <div className="w-full h-px bg-gray-200 my-8"></div>
@@ -129,6 +189,10 @@ export default function TeamListPage({ token }) {
                 <TeamTable
                     list={joinedTeamList}
                     setDetailModalIsOpen={setDetailModalIsOpen}
+                    token={token}
+                    setDetailModalTeam={setDetailModalTeam}
+                    isCreator={false}
+                    setIsCreator={setIsCreator}
                 />
             }
             {createdTeamList.length === 0 && joinedTeamList.length === 0 &&
@@ -146,15 +210,94 @@ export default function TeamListPage({ token }) {
                     </Link>
                 </div>
             }
-            <DetailModal
-                title="팀 상세정보"
-                isOpen={detailModalIsOpen}
-                setIsOpen={setDetailModalIsOpen}
-            >
-                <p>
-                    팀 상세정보
-                </p>
-            </DetailModal>
+            {detailModalTeam &&
+                <DetailModal
+                    title="팀 상세정보"
+                    isOpen={detailModalIsOpen}
+                    setIsOpen={setDetailModalIsOpen}
+                >
+                    <Form {...form}>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                form.handleSubmit(onSubmit);
+                            }}
+                            className="space-y-8"
+                        >
+                            <FormField
+                                control={form.control}
+                                name="teamName"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>팀 이름</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                {...field}
+                                                id="teamName"
+                                                className="rounded-sm"
+                                                disabled={!isEditing}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="teamDescription"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>설명</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                {...field}
+                                                id="teamDescription"
+                                                className="rounded-sm resize-none"
+                                                disabled={!isEditing}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            {isCreator && isEditing &&
+                                <div className="flex gap-2 justify-end">
+                                    <Button
+                                        type="submit"
+                                        className="bg-primary-500 text-white"
+                                    >
+                                        저장
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                            setIsEditing(false);
+                                        }}
+                                    >
+                                        취소
+                                    </Button>
+                                </div>
+                            }
+                        </form>
+                    </Form>
+                    {isCreator && !isEditing &&
+                        <div className="flex gap-2 justify-end">
+                            <Button
+                                variant="outline"
+                                className="bg-primary-500 text-white hover:bg-primary-600"
+                                onClick={() => {
+                                    setIsEditing(true);
+                                }}
+                            >
+                                수정
+                            </Button>
+                            <Button variant="destructive">
+                                삭제
+                            </Button>
+                        </div>
+                    }
+                </DetailModal>
+            }
         </>
     );
 };
