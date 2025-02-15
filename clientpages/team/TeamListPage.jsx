@@ -35,6 +35,17 @@ const TeamTable = ({
     setDetailModalIsOpen,
     setSelectedTeam
 }) => {
+    const handleDetailModal = async (teamId) => {
+        setIsCreator(isCreator);
+        const requestTeamDetail = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/team/info/${teamId}`, null, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        setDetailModalTeam(requestTeamDetail.data);
+    };
+
     return (
         <div className="border rounded-md overflow-hidden">
             <Table>
@@ -62,7 +73,7 @@ const TeamTable = ({
                             {team.description}
                         </TableCell>
                         <TableCell className="text-center flex">
-                            {team.teamMemberInfos.length > 0 && team.teamMemberInfos.map((member, index) => (
+                            {team.teamMemberInfos && team.teamMemberInfos.length > 0 && team.teamMemberInfos.map((member, index) => (
                                 <div key={`${member.id}_${index}`} className={`w-10 h-10 text-sm border border-gray-400 rounded-full flex items-center justify-center font-semibold`}>
                                     {getAvatarFallback(member.username)}
                                 </div>
@@ -138,11 +149,15 @@ export default function TeamListPage({ token }) {
 
     useEffect(() => {
         async function fetchTeamList() {
-            const requestCreatedTeamList = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/team/list/creator?page=1`, null, {
+            const requestCreatedTeamList = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/team/list/creator`, null, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
+
+            if (requestCreatedTeamList.status === 401) {
+                await removeSession();
+            };
 
             if (requestCreatedTeamList.data.content.length > 0) {
                 setCreatedTeamList(requestCreatedTeamList.data.content);
@@ -155,6 +170,10 @@ export default function TeamListPage({ token }) {
                     Authorization: `Bearer ${token}`
                 }
             });
+
+            if (requestJoinedTeamList.status === 401) {
+                await removeSession();
+            };
 
             if (requestJoinedTeamList.data.content.length > 0) {
                 setJoinedTeamList(requestJoinedTeamList.data.content);
