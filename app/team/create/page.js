@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
