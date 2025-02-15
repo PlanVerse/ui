@@ -62,7 +62,7 @@ export function ProfileDropDown() {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/project/management" className="w-full cursor-pointer">
+            <Link href="/project/setting" className="w-full cursor-pointer">
               프로젝트 설정
             </Link>
           </DropdownMenuItem>
