@@ -63,12 +63,9 @@ export default async function ProjectSettingPage() {
                                 <TableHead className="text-center border-r">
                                     설명
                                 </TableHead>
-                                <TableHead className="text-center border-r">
+                                <TableHead className="text-center">
                                     프로젝트 멤버
                                 </TableHead>     
-                                <TableHead>
-                                    
-                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -94,14 +91,6 @@ export default async function ProjectSettingPage() {
                                             </div>
                                         ))}
                                     </TableCell>
-                                    <TableCell className="text-center flex">
-                                        <Button
-                                            varient="outline"
-                                            className="bg-primary-500"
-                                        >
-                                            수정
-                                        </Button>
-                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -114,6 +103,7 @@ export default async function ProjectSettingPage() {
                     onClick={handleDeleteChecked}
                     disabled={!handleSingleCheck}
                     className="bg-primary-500"
+                    varient="outline"
                 >
                     삭제
                 </Button>
@@ -121,7 +111,7 @@ export default async function ProjectSettingPage() {
                     varient="outline"
                     className="bg-primary-500"
                 >
-                   정보 수정
+                    수정
                 </Button>
                 </div>
             </>
