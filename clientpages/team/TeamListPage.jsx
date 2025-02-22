@@ -33,18 +33,20 @@ const teamDetailSchema = z.object({
 const TeamTable = ({
     list,
     setDetailModalIsOpen,
-    setSelectedTeam
+    setSelectedTeam,
+    isCreator,
+    setIsCreator
 }) => {
-    const handleDetailModal = async (teamId) => {
-        setIsCreator(isCreator);
-        const requestTeamDetail = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/team/info/${teamId}`, null, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+    // const handleDetailModal = async (teamId) => {
+    //     setIsCreator(isCreator);
+    //     const requestTeamDetail = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/team/info/${teamId}`, null, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     });
 
-        setDetailModalTeam(requestTeamDetail.data);
-    };
+    //     setDetailModalTeam(requestTeamDetail.data);
+    // };
 
     return (
         <div className="border rounded-md overflow-hidden">
@@ -86,6 +88,7 @@ const TeamTable = ({
                                 onClick={() => {
                                     setSelectedTeam(team);
                                     setDetailModalIsOpen(true);
+                                    setIsCreator(isCreator);
                                 }}
                             >
                                 상세정보
@@ -107,7 +110,7 @@ export default function TeamListPage({ token }) {
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [teamMember, setTeamMember] = useState("");
     const [members, setMembers] = useState([]);
-
+    const [isCreator, setIsCreator] = useState(false);
     const router = useRouter();
 
     const form = useForm({
@@ -212,6 +215,8 @@ export default function TeamListPage({ token }) {
                     list={createdTeamList}
                     setDetailModalIsOpen={setDetailModalIsOpen}
                     setSelectedTeam={setSelectedTeam}
+                    isCreator={true}
+                    setIsCreator={setIsCreator}
                 />
             }
             <div className="w-full h-px bg-gray-200 my-8"></div>
@@ -223,6 +228,8 @@ export default function TeamListPage({ token }) {
                     list={joinedTeamList}
                     setDetailModalIsOpen={setDetailModalIsOpen}
                     setSelectedTeam={setSelectedTeam}
+                    isCreator={false}
+                    setIsCreator={setIsCreator}
                 />
             }
             {createdTeamList.length === 0 && joinedTeamList.length === 0 &&
@@ -272,7 +279,8 @@ export default function TeamListPage({ token }) {
                                                     name: e.target.value
                                                 });
                                             }}
-                                            required
+                                            disabled={!isCreator}
+                                            required={isCreator}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -298,12 +306,13 @@ export default function TeamListPage({ token }) {
                                                     description: e.target.value
                                                 });
                                             }}
+                                            disabled={!isCreator}
                                         />
                                     </FormControl>
                                 </FormItem>
                             )}
                         />
-                        <div>
+                        <div className="relative">
                             <Label className="text-sm font-medium">팀원</Label>
                             <Input
                                 id="teamMembers"
@@ -319,6 +328,7 @@ export default function TeamListPage({ token }) {
                                         addMember();
                                     };
                                 }}
+                                disabled={!isCreator}
                             />
                             {teamMember.length > 0 && (
                                 <div
@@ -340,6 +350,7 @@ export default function TeamListPage({ token }) {
                                             <X
                                                 className="w-3 h-3"
                                                 onClick={() => {
+                                                    if (!isCreator) return;
                                                     setMembers(members.filter((m) => m !== member));
                                                 }}
                                             />
@@ -351,7 +362,8 @@ export default function TeamListPage({ token }) {
                         <div className="flex justify-end">
                             <Button
                                 type="submit"
-                                className="bg-primary-500 text-white"
+                                className="bg-primary-500 text-white disabled:bg-gray-400"
+                                disabled={!isCreator}
                             >
                                 저장
                             </Button>
