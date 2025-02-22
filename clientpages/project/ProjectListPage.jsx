@@ -3,6 +3,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getAvatarFallback } from "@/lib/avatar";
 import { Button } from "@/components/ui/button";
+import { getApi } from "@/lib/axios";
+// import { getSession } from "@/lib/session";
 import Link from "next/link";
 import React from "react";
 // import useState from "react";
@@ -30,10 +32,10 @@ const ProjectTable = ({ plist }) => (
                         프로젝트 멤버
                     </TableHead>
                     <TableHead>
-
                     </TableHead>
                 </TableRow>
             </TableHeader>
+            
             <TableBody>
                 {plist.map((project) => (
                     <TableRow key={project.id}>
@@ -90,35 +92,35 @@ export default async function ProjectListPage() {
     let createdProjectList = [];
     let joinedProjectList = [];
 
-    // const requestCreatedProjectList = await getApi(`${process.env.API_URL}/team/list/creator?page=1`, null, {
-    //     headers: {
-    //         Authorization: `Bearer ${token}`
-    //     }
-    // })
-    //     .catch(async (error) => {
-    //         if (error.status === 401) {
-    //             await removeSession();
-    //         }
-    //     });
+    const requestCreatedProjectList = await getApi(`${process.env.API_URL}/project/list/creator?page=1`, null, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .catch(async (error) => {
+            if (error.status === 401) {
+                await removeSession();
+            }
+        });
 
-    // const requestJoinedProjectList = await getApi(`${process.env.API_URL}/project/list/member`, null, {
-    //     headers: {
-    //         Authorization: `Bearer ${token}`
-    //     }
-    // })
-    //     .catch(async (error) => {
-    //         if (error.status === 401) {
-    //             await removeSession();
-    //         }
-    //     });
+    const requestJoinedProjectList = await getApi(`${process.env.API_URL}/project/list/member`, null, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+        .catch(async (error) => {
+            if (error.status === 401) {
+                await removeSession();
+            }
+        });
 
-    // if (requestCreatedProjectList.data.content.length > 0) {
-    //     createdProjectList.push(...requestCreatedProjectList.data.content);
-    // };
+    if (requestCreatedProjectList.data.content.length > 0) {
+        createdProjectList.push(...requestCreatedProjectList.data.content);
+    };
 
-    // if (requestJoinedProjectList.data.content.length > 0) {
-    //     joinedProjectList.push(...requestJoinedProjectList.data.content);
-    // };
+    if (requestJoinedProjectList.data.content.length > 0) {
+        joinedProjectList.push(...requestJoinedProjectList.data.content);
+    };
 
     return(
         <>
@@ -142,9 +144,10 @@ export default async function ProjectListPage() {
         {createdProjectList.length === 0 && joinedProjectList.length === 0 &&
             <div className="w-full h-[calc(100vh-176px)] flex flex-col gap-4 items-center justify-center">
                 <p className="w-fit">
-                    소속된 프로젝트가 없습니다.
+                    소속된 프로젝트나 생성한 프로젝트가 없습니다.
                 </p>
                 <Link href="/project/create">
+                    {createdProjectList.length === null &&
                     <Button
                         variant="outline"
                         className="bg-primary-500 text-white"
@@ -152,6 +155,7 @@ export default async function ProjectListPage() {
                     >
                         새 프로젝트 생성
                     </Button>
+                    }
                 </Link>
             </div>
         }
