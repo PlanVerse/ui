@@ -22,7 +22,7 @@ export default function ProjectCreatePage() {
   const formSchema = z.object({
     projectName: z.string({
         // invalid_type_error: '프로젝트 이름을 다시 입력하세요'
-    }).min(3),
+    }).max(50),
     projectDescription: z.string({
         // invalid_type_error: '프로젝트 설명을 다시 입력하세요'
     }).max(100),
@@ -46,12 +46,19 @@ export default function ProjectCreatePage() {
     };
 
     async function onSubmit(values) {
-        // const createProject = await axios.post("", {}, {
-        //     method: "POST"
-        // });
         console.log(values);
-        // router.reload();
+        await postApi(`/project`, {
+            name: values.projectName,
+            description: values.projectDescription,
+            invite: members
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        router.refresh();
     };
+    
 
   return (
     <div>
@@ -62,7 +69,7 @@ export default function ProjectCreatePage() {
             <form 
                 onSubmit={(e) => {
                     e.preventDefault();
-                    form.handleSubmit(onSubmit)(e);
+                    form.handleSubmit(onSubmit);
                 }}
                 className="space-y-8 max-w-96 mx-auto"
             >
