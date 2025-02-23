@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { getApi } from "@/lib/axios";
 // import { getSession } from "@/lib/session";
 import Link from "next/link";
-import React from "react";
-// import useState from "react";
+import { useEffect } from "react";
+// import { useState } from "react";
+
 
 
 // Todo: 권한에 따라 프로젝트 생성버튼이 있거나 없게 하기
@@ -84,7 +85,7 @@ const ProjectTable = ({ plist }) => (
     </div>
 )
 
-export default async function ProjectListPage() {
+export default function ProjectListPage() {
     // 프로젝트 목록 페이지
 
     // const token = await getSession();
@@ -92,35 +93,59 @@ export default async function ProjectListPage() {
     let createdProjectList = [];
     let joinedProjectList = [];
 
-    const requestCreatedProjectList = await getApi(`${process.env.API_URL}/project/list/creator?page=1`, null, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
-        .catch(async (error) => {
-            if (error.status === 401) {
-                await removeSession();
-            }
-        });
+    // useEffect(() => {
+    // async function fetchCreatedProjectList() {
+    //     const requestCreatedProjectList = await getApi(`${process.env.API_URL}/project/list/creator?page=1`, null, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     })
+    //         .catch(async (error) => {
+    //             if (error.status === 401) {
+    //                 await removeSession();
+    //             }
+    //         });
+    //     const requestJoinedProjectList = await getApi(`${process.env.API_URL}/project/list/member`, null, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     })
+    //         .catch(async (error) => {
+    //             if (error.status === 401) {
+    //                 await removeSession();
+    //             }
+    //         });
+    // }
+    // })
+    // const requestCreatedProjectList = await getApi(`${process.env.API_URL}/project/list/creator?page=1`, null, {
+    //     headers: {
+    //         Authorization: `Bearer ${token}`
+    //     }
+    // })
+    //     .catch(async (error) => {
+    //         if (error.status === 401) {
+    //             await removeSession();
+    //         }
+    //     });
 
-    const requestJoinedProjectList = await getApi(`${process.env.API_URL}/project/list/member`, null, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
-        .catch(async (error) => {
-            if (error.status === 401) {
-                await removeSession();
-            }
-        });
+    // const requestJoinedProjectList = await getApi(`${process.env.API_URL}/project/list/member`, null, {
+    //     headers: {
+    //         Authorization: `Bearer ${token}`
+    //     }
+    // })
+        // .catch(async (error) => {
+        //     if (error.status === 401) {
+        //         await removeSession();
+        //     }
+        // });
 
-    if (requestCreatedProjectList.data.content.length > 0) {
-        createdProjectList.push(...requestCreatedProjectList.data.content);
-    };
+    // if (requestCreatedProjectList.data.content.length > 0) {
+    //     createdProjectList.push(...requestCreatedProjectList.data.content);
+    // };
 
-    if (requestJoinedProjectList.data.content.length > 0) {
-        joinedProjectList.push(...requestJoinedProjectList.data.content);
-    };
+    // if (requestJoinedProjectList.data.content.length > 0) {
+    //     joinedProjectList.push(...requestJoinedProjectList.data.content);
+    // };
 
     return(
         <>
