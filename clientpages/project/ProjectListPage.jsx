@@ -4,9 +4,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { getAvatarFallback } from "@/lib/avatar";
 import { Button } from "@/components/ui/button";
 import { getApi } from "@/lib/axios";
-// import { getSession } from "@/lib/session";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { boolean } from "zod";
 // import { useState } from "react";
 
 
@@ -85,67 +85,71 @@ const ProjectTable = ({ plist }) => (
     </div>
 )
 
-export default function ProjectListPage() {
+export default function ProjectListPage({token}) {
     // 프로젝트 목록 페이지
-
-    // const token = await getSession();
-
-    let createdProjectList = [];
-    let joinedProjectList = [];
-
-    // useEffect(() => {
-    // async function fetchCreatedProjectList() {
-    //     const requestCreatedProjectList = await getApi(`${process.env.API_URL}/project/list/creator?page=1`, null, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     })
-    //         .catch(async (error) => {
-    //             if (error.status === 401) {
-    //                 await removeSession();
+    const [isLoading, setIsLoading] = useState(true);
+    const [createdProjectList, setCreatedProjectList] = useState([]);
+    const [joinedProjectList, setJoinedProjectList] = useState([]);
+    
+    // async function fetchProjectInfos() {
+    //     const requestProjectInfos = await getApi(/project/info/1`,
+    //     {
+    //         id: number,
+    //         projectInfoId: number,
+    //         teamInfoid: number,
+    //         userInfoId: number,
+    //         creator: boolean,
+    //         username: string,
+    //         email: string,
+    //     }, {    
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`
     //             }
-    //         });
+    //         })
+    // }
+
+    useEffect(() => {
+    async function fetchCreatedProjectList() {
+        const requestCreatedProjectList = await getApi(`/project/list/1`, null, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+           
+        if (requestCreatedProjectList.status === 401) {
+            await removeSession();
+        }
+            
+        if (requestCreatedProjectList.data.content.length > 0) {
+            setCreatedProjectList(requestCreatedProjectList.data.content);
+        };
+    };
+
+    // async function fetchJoinedProjectList() {
     //     const requestJoinedProjectList = await getApi(`${process.env.API_URL}/project/list/member`, null, {
     //         headers: {
     //             Authorization: `Bearer ${token}`
     //         }
     //     })
-    //         .catch(async (error) => {
-    //             if (error.status === 401) {
-    //                 await removeSession();
-    //             }
-    //         });
-    // }
-    // })
-    // const requestCreatedProjectList = await getApi(`${process.env.API_URL}/project/list/creator?page=1`, null, {
-    //     headers: {
-    //         Authorization: `Bearer ${token}`
+
+    //     if (requestJoinedProjectList.status === 401) {
+    //         await removeSession();
     //     }
-    // })
-    //     .catch(async (error) => {
-    //         if (error.status === 401) {
-    //             await removeSession();
-    //         }
-    //     });
-
-    // const requestJoinedProjectList = await getApi(`${process.env.API_URL}/project/list/member`, null, {
-    //     headers: {
-    //         Authorization: `Bearer ${token}`
-    //     }
-    // })
-        // .catch(async (error) => {
-        //     if (error.status === 401) {
-        //         await removeSession();
-        //     }
-        // });
-
-    // if (requestCreatedProjectList.data.content.length > 0) {
-    //     createdProjectList.push(...requestCreatedProjectList.data.content);
+        
+    //     if (requestJoinedProjectList.data.content.length > 0) {
+    //         setJoinedProjectList(requestJoinedProjectList.data.content);
+    //     };
     // };
-
-    // if (requestJoinedProjectList.data.content.length > 0) {
-    //     joinedProjectList.push(...requestJoinedProjectList.data.content);
-    // };
+    
+    Promise.all([
+        fetchCreatedProjectList(),
+        // fetchJoinedProjectList(),
+        // fetchProjectInfos(),
+    ])
+        .then(() => {
+            setIsLoading(false);
+        });
+    }, []);
 
     return(
         <>
@@ -172,7 +176,7 @@ export default function ProjectListPage() {
                     소속된 프로젝트나 생성한 프로젝트가 없습니다.
                 </p>
                 <Link href="/project/create">
-                    {createdProjectList.length === null &&
+                    { /*requestProjectInfos.creator === true && */
                     <Button
                         variant="outline"
                         className="bg-primary-500 text-white"
