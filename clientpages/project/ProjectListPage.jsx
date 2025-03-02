@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import DetailModal from "@/components/DetailModal";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-// import { boolean } from "zod";
+import Loading from "@/components/Loading";
 // import { useState } from "react";
 
 const projectDetailSchema = z.object({
@@ -32,7 +32,8 @@ const ProjectTable = ({
     setIsCreator,
 }) => (
     <div className="border rounded-md overflow-hidden">
-        <Table>
+        {/* 프로젝트 목록 테이블 */}
+        <Table> 
             <TableHeader>
                 <TableRow className="bg-gray-100">
                     <TableHead className="text-center border-r">
@@ -42,7 +43,7 @@ const ProjectTable = ({
                         설명
                     </TableHead>
                     <TableHead className="text-center">
-                        프로젝트 멤버
+                        프로젝트 구성원
                     </TableHead>
                     <TableHead className="w-32 text-center"></TableHead>
                 </TableRow>
@@ -81,19 +82,6 @@ const ProjectTable = ({
                 ))}
             </TableBody>
         </Table>
-        {/* <div
-            className="w-full flex justify-end"
-        >
-            <Link href="/project/create">
-                <Button
-                    variant="outline"
-                    className="bg-primary-500 text-white disabled:bg-gray-400"
-                    // disabled={!invalidProjectCreator}
-                >
-                    새 프로젝트 생성
-                </Button>
-            </Link>
-        </div> */}
     </div>
 )
 
@@ -123,22 +111,25 @@ export default function ProjectListPage( { token }) {
         setProjectMembers([...projectMembers, projectMember]);
     };
 
-    // async function fetchProjectInfos() {
-    //     const requestProjectInfos = await getApi(`${process.env.API_URL}/project/info/1`,
-    //     {
-    //         id: number,
-    //         projectInfoId: number,
-    //         teamInfoid: number,
-    //         userInfoId: number,
-    //         creator: boolean,
-    //         username: string,
-    //         email: string,
-    //     }, {    
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             }
-    //         })
-    // }
+    async function onProjectSubmit(values) {
+        try {
+            await putApi(`/team/info`, {
+                projectId: selectedProject.id,
+                name: values.projectName || selectedProject.name,
+                description: values.projectDescription || selectedProject.description,
+                invite: projectMembers.filter((projectMember) => !selectedProject.projectMemberInfos.find((pm) => pm.email === projectMember)),
+                exclude: projectMembers.filter((projectMember) => selectedProject.projectMemberInfos.find((pm) => pm.email === projectMember))
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            setDetailModalIsOpen(false);
+            window.location.reload();
+        } catch (error) {
+            return;
+        };
+    };
 
     useEffect(() => {
     async function fetchProjectList() {
@@ -156,27 +147,9 @@ export default function ProjectListPage( { token }) {
             setProjectList(requestProjectList.data.content);
         };
     };
-
-    // async function fetchJoinedProjectList() {
-    //     const requestJoinedProjectList = await getApi(`${process.env.API_URL}/project/list/member`, null, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     })
-
-    //     if (requestJoinedProjectList.status === 401) {
-    //         await removeSession();
-    //     }
-        
-    //     if (requestJoinedProjectList.data.content.length > 0) {
-    //         setJoinedProjectList(requestJoinedProjectList.data.content);
-    //     };
-    // };
     
     Promise.all([
         fetchProjectList(),
-        // fetchJoinedProjectList(),
-        // fetchProjectInfos(),
     ])
         .then(() => {
             setIsLoading(false);
@@ -184,20 +157,20 @@ export default function ProjectListPage( { token }) {
     }, []);
 
     useEffect(() => {
-        if (selectedProject) {
+        if (selectedProject && selectedProject.projectMemberInfos) {
             setProjectMembers(selectedProject.projectMemberInfos.map((projectMember) => projectMember.email));
         }
     }, [selectedProject]);
+
+    if (isLoading) {
+        return <Loading />
+    };
 
     return(
         <>
         <h1 className="text-2xl font-bold mb-8">
             프로젝트 목록
         </h1>
-        {projectList.length > 0 &&
-            <h2 className="text-xl font-semibold mb-8">
-                생성한 프로젝트
-            </h2> &&
             <ProjectTable 
                 list={projectList}
                 setDetailModalIsOpen={setDetailModalIsOpen}
@@ -205,15 +178,7 @@ export default function ProjectListPage( { token }) {
                 isCreator={true}
                 setIsCreator={setIsCreator}
             />
-        }
-        {/* <div className="h-px bg-gray-200 my-8"></div> */}
-        {/* {joinedProjectList.length > 0 &&
-            <h2 className="text-xl font-semibold mb-8">
-                소속된 프로젝트
-            </h2> &&
-            <ProjectTable list={joinedProjectList} />
-        } */}
-        {/* Todo: 권한에 따라 메시지와 버튼유무를 다르게 하기 */}
+        
         {projectList.length === 0 &&
             <div className="w-full h-[calc(100vh-176px)] flex flex-col gap-4 items-center justify-center">
                 <p className="w-fit">
@@ -223,7 +188,7 @@ export default function ProjectListPage( { token }) {
                     <Button
                         variant="outline"
                         className="bg-primary-500 text-white"
-                        // disabled={!invalidProjectCreator}
+                        disabled={!isCreator}
                     >
                         새 프로젝트 생성
                     </Button>
@@ -237,9 +202,9 @@ export default function ProjectListPage( { token }) {
             >
                 <Form {...form}>
                     <form
-                        onSubmit={(e) => {
+                        onProjectSubmit={(e) => {
                             e.preventDefault();
-                            form.handleSubmit(onSubmit)(e);
+                            form.handleSubmit(onProjectSubmit)(e);
                         }}
                         className="space-y-8"
                     >
@@ -253,7 +218,7 @@ export default function ProjectListPage( { token }) {
                                         <Input
                                             {...field}
                                             id="projectName"
-                                            placeholder="팀명을 입력하세요"
+                                            placeholder="프로젝트명을 입력하세요"
                                             className="rounded-sm"
                                             value={selectedProject.name || field.value}
                                             onChange={(e) => {
@@ -275,12 +240,12 @@ export default function ProjectListPage( { token }) {
                             name="projectDescription"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>설명</FormLabel>
+                                    <FormLabel>프로젝트 설명</FormLabel>
                                     <FormControl>
                                         <Textarea
                                             {...field}
                                             id="projectDescription"
-                                            placeholder="팀 설명을 입력하세요"
+                                            placeholder="프로젝트 설명을 입력하세요"
                                             className="rounded-sm"
                                             value={selectedProject.description || field.value}
                                             onChange={(e) => {
@@ -296,10 +261,10 @@ export default function ProjectListPage( { token }) {
                             )}
                         />
                         <div className="relative">
-                            <Label className="text-sm font-medium">팀원</Label>
+                            <Label className="text-sm font-medium">프로젝트 구성원</Label>
                             <Input
                                 id="projectMembers"
-                                placeholder="추가할 팀원의 이메일 주소를 입력해주세요"
+                                placeholder="추가할 프로젝트 구성원의 이메일 주소를 입력해주세요"
                                 onChange={(e) => {
                                     setProjectMember(e.target.value);
                                 }}
@@ -330,13 +295,13 @@ export default function ProjectListPage( { token }) {
                                             className="w-fit flex items-center gap-2"
                                         >
                                             {projectMember}
-                                            <X
-                                                className="w-3 h-3"
-                                                onClick={() => {
-                                                    if (!isCreator) return;
-                                                    setProjectMembers(projectMembers.filter((m) => m !== projectMember));
-                                                }}
-                                            />
+                                                <X
+                                                    className="w-3 h-3"
+                                                    onClick={() => {
+                                                        if (!isCreator) return;
+                                                        setProjectMembers(projectMembers.filter((m) => m !== projectMember));
+                                                    }}
+                                                />
                                         </Badge>
                                     ))
                                 }
