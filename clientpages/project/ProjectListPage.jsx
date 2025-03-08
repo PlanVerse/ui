@@ -75,7 +75,7 @@ const ProjectTable = ({
                                     setIsCreator(isCreator);
                                 }}
                             >
-                                상세정보
+                                수정
                             </Button>
                         </TableCell>
                     </TableRow>
@@ -111,9 +111,25 @@ export default function ProjectListPage( { token }) {
         setProjectMembers([...projectMembers, projectMember]);
     };
 
+    function deleteProject() {
+        if(confirm("프로젝트를 정말 삭제하시겠습니까?")) {
+            setProjectList(projectList.filter((id) => id !== projectList));
+        } else {
+            return;
+        }
+    }
+
+    function modifyProject() {
+        if(confirm("프로젝트 정보를 수정하시겠습니까?")) {
+            alert("프로젝트 정보가 수정되었습니다.");
+        } else {
+            return;
+        }
+    }
+
     async function onProjectSubmit(values) {
         try {
-            await putApi(`/team/info`, {
+            await putApi(`/project/info`, {
                 projectId: selectedProject.id,
                 name: values.projectName || selectedProject.name,
                 description: values.projectDescription || selectedProject.description,
@@ -174,7 +190,7 @@ export default function ProjectListPage( { token }) {
             <ProjectTable 
                 list={projectList}
                 setDetailModalIsOpen={setDetailModalIsOpen}
-                setSelectedProject={setSelectedProject} 
+                setSelectedProject={setSelectedProject}
                 isCreator={true}
                 setIsCreator={setIsCreator}
             />
@@ -312,6 +328,15 @@ export default function ProjectListPage( { token }) {
                                 type="submit"
                                 className="bg-primary-500 text-white disabled:bg-gray-400"
                                 disabled={!isCreator}
+                                onClick={deleteProject}
+                            >
+                                삭제
+                            </Button>
+                            <Button
+                                type="submit"
+                                className="bg-primary-500 text-white disabled:bg-gray-400"
+                                disabled={!isCreator}
+                                onClick={modifyProject}
                             >
                                 저장
                             </Button>
