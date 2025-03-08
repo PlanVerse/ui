@@ -55,7 +55,7 @@ export default function Page() {
     };
 
     try {
-      await postApi(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign-up`, {
+      await postApi(`/auth/sign-up`, {
         name: name,
         nickName: nickName,
         email: email,
