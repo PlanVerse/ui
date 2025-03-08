@@ -50,7 +50,7 @@ export default function ProjectCreatePage() {
         await postApi(`/project`, {
             name: values.projectName,
             description: values.projectDescription,
-            invite: members
+            invite: members,
         }, {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -73,6 +73,7 @@ export default function ProjectCreatePage() {
                 }}
                 className="space-y-8 max-w-96 mx-auto"
             >
+                {/* 프로젝트 생성 입력 폼 */}
                 <FormField 
                     control={form.control}
                     name="projectName"
@@ -111,12 +112,12 @@ export default function ProjectCreatePage() {
                 />                    
                 <div className="relative">
                     <Label htmlFor="projectMember">
-                        프로젝트 인원 추가
+                        프로젝트 구성원 추가
                     </Label>
                 <Input
                     id = "projectMember"
                     type = "text"
-                    placeholder = "추가할 인원의 이메일을 입력하세요"
+                    placeholder = "추가할 구성원의 이메일을 입력하세요"
                     value = {projectMember}
                     className = "rounded-sm my-2"
                     onChange={(e) => setProjectMember(e.target.value)}
