@@ -37,32 +37,21 @@ const TeamTable = ({
     isCreator,
     setIsCreator
 }) => {
-    // const handleDetailModal = async (teamId) => {
-    //     setIsCreator(isCreator);
-    //     const requestTeamDetail = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/team/info/${teamId}`, null, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     });
-
-    //     setDetailModalTeam(requestTeamDetail.data);
-    // };
-
     return (
         <div className="border rounded-md overflow-hidden">
             <Table>
                 <TableHeader>
                 <TableRow className="bg-gray-100">
-                    <TableHead className="text-center border-r">
+                    <TableHead className="text-center border-r w-1/4">
                         팀 이름
                     </TableHead>
-                    <TableHead className="text-center border-r">
+                    <TableHead className="text-center border-r w-1/4">
                         설명
                     </TableHead>
-                    <TableHead className="text-center">
+                    <TableHead className="text-center border-r w-1/4">
                         팀원
                     </TableHead>
-                    <TableHead className="w-32 text-center"></TableHead>
+                    <TableHead className="w-32 text-center w-1/4"></TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -74,9 +63,9 @@ const TeamTable = ({
                         <TableCell className="text-center border-r">
                             {team.description}
                         </TableCell>
-                        <TableCell className="text-center flex">
+                        <TableCell className="text-center border-r flex">
                             {team.teamMemberInfos && team.teamMemberInfos.length > 0 && team.teamMemberInfos.map((member, index) => (
-                                <div key={`${member.id}_${index}`} className={`w-10 h-10 text-sm border border-gray-400 rounded-full flex items-center justify-center font-semibold`}>
+                                <div key={`${member.id}_${index}`} className={`-ml-4 first:ml-0 w-10 h-10 text-sm border border-gray-400 rounded-full flex items-center justify-center font-semibold bg-white`}>
                                     {getAvatarFallback(member.username)}
                                 </div>
                             ))}
@@ -131,7 +120,7 @@ export default function TeamListPage({ token }) {
 
     async function onSubmit(values) {
         try {
-            await putApi(`${process.env.NEXT_PUBLIC_API_URL}/team/info`, {
+            await putApi(`/team/info`, {
                 teamId: selectedTeam.id,
                 name: values.teamName || selectedTeam.name,
                 description: values.teamDescription || selectedTeam.description,
@@ -152,7 +141,7 @@ export default function TeamListPage({ token }) {
 
     useEffect(() => {
         async function fetchTeamList() {
-            const requestCreatedTeamList = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/team/list/creator`, null, {
+            const requestCreatedTeamList = await getApi(`/team/list/creator`, null, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -168,7 +157,7 @@ export default function TeamListPage({ token }) {
         };
 
         async function fetchJoinedTeamList() {
-            const requestJoinedTeamList = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/team/list/member`, null, {
+            const requestJoinedTeamList = await getApi(`/team/list/member`, null, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -193,7 +182,7 @@ export default function TeamListPage({ token }) {
     }, []);
 
     useEffect(() => {
-        if (selectedTeam) {
+        if (selectedTeam && selectedTeam.teamMemberInfos) {
             setMembers(selectedTeam.teamMemberInfos.map((member) => member.email));
         }
     }, [selectedTeam]);

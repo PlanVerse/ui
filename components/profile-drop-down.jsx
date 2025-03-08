@@ -19,7 +19,7 @@ export function ProfileDropDown() {
   const handleLogout = async () => {
     try {
       const token = await getSession();
-      await postApi(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign-out`, null, {
+      await postApi(`/auth/sign-out`, null, {
         headers: {
           Authorization: `Bearer ${token}`
         }
