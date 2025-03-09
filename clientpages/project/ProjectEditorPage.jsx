@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { getApi, postApi } from "@/lib/axios";
+import { useEffect, useRef, useState } from "react";
+// import { getApi, postApi } from "@/lib/axios";
 import { getSession } from "@/lib/session";
 
 import EditorJS from "@editorjs/editorjs";
@@ -22,6 +22,7 @@ import Table from "@editorjs/table";
 
 export default function Page() {
   const ejInstance = useRef(null);
+  const [editorData, setEditorData] = useState(null);
 
   const initEditor = () => {
     const editor = new EditorJS({
@@ -45,7 +46,7 @@ export default function Page() {
               async uploadByFile(file) {
                 const token = await getSession();
 
-                const bodyData = await new FormData();
+                const bodyData = new FormData();
                 bodyData.append("file", file);
 
                 const config = {
@@ -55,18 +56,31 @@ export default function Page() {
                   },
                 };
 
-                return await postApi(`${process.env.NEXT_PUBLIC_API_URL}/editor/upload/99`, bodyData, config).then(async (uploadResponse) => {
-                  const config = {
+                try {
+                  const uploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/editor/upload/99`, {
+                    method: "POST",
                     headers: {
-                      Authorization: `Bearer ${token}`,
+                      Authorization: `Bearer ${token}`
+                    },
+                    body: bodyData,
+                  });
+                  const uploadResponseJson = await uploadResponse.json();
+                  const fetchResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/${uploadResponseJson.file.url}`, {
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                    },
+                  });
+                  const fetchResponseJson = await fetchResponse.json();
+
+                  return {
+                    success: 1,
+                    file: {
+                      url: fetchResponseJson.file.preview
                     },
                   };
-
-                  const fetchResponse = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/${uploadResponse.file.url}`, null, config);
-                  uploadResponse.preview = fetchResponse.file.preview;
-
-                  return uploadResponse;
-                });
+                } catch (error) {
+                  throw new Error(error);
+                }
               },
             },
           },
@@ -131,34 +145,14 @@ export default function Page() {
       placeholder: "Write something or press / to select a tool",
       autofocus: true,
 
-      data: {
-        blocks: [
-          {
-            id: "9802bjaAA2",
-            type: "image",
-            data: {
-              caption: "",
-              withBorder: true,
-              withBackground: false,
-              stretched: false,
-              file: {
-                url: "editor/99/88c4a389-6685-4064-9dce-cb50477b8c25",
-                // todo 하단 객체로 랜더링 되도록 해야함
-                preview: "https://s.pstatic.net/static/www/mobile/edit/20240112_1095/upload_1705057885416AaxUM.png",
-              },
-            },
-          },
-        ],
-      },
+      data: editorData,
 
       onReady: () => {
         ejInstance.current = editor;
       },
 
-      onChange: async (api, event) => {
-        let content = await editor.saver.save();
-
-        console.log(content);
+      onChange: async (_api, _event) => {
+        await editor.saver.save();
       },
     });
   };
