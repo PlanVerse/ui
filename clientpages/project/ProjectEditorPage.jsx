@@ -6,7 +6,7 @@ import { getSession } from "@/lib/session";
 
 import EditorJS from "@editorjs/editorjs";
 import Header from "@editorjs/header";
-import ImageTool from "@editorjs/image";
+import ImageTool from "@seg00/editorjs-image-preview";
 import Checklist from "@editorjs/checklist";
 import Embed from "@editorjs/embed";
 import LinkTool from "@editorjs/link";
