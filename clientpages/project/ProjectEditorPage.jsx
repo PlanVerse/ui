@@ -70,14 +70,8 @@ export default function Page() {
                       Authorization: `Bearer ${token}`
                     },
                   });
-                  const fetchResponseJson = await fetchResponse.json();
 
-                  return {
-                    success: 1,
-                    file: {
-                      url: fetchResponseJson.file.preview
-                    },
-                  };
+                  return await fetchResponse.json();
                 } catch (error) {
                   throw new Error(error);
                 }
