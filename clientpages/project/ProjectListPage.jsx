@@ -53,7 +53,12 @@ const ProjectTable = ({
                 {list.map((project) => (
                     <TableRow key={project.id}>
                         <TableCell className="text-center border-r">
-                            {project.name}
+                            <Link 
+                                href={`/project/list/detail/${project.id}`}                
+                            >
+                                {project.name}
+                                
+                            </Link>
                         </TableCell>
                         <TableCell className="text-center border-r">
                             {project.description}
@@ -74,6 +79,7 @@ const ProjectTable = ({
                                     setDetailModalIsOpen(true);
                                     setIsCreator(isCreator);
                                 }}
+                                disabled={!isCreator}
                             >
                                 수정
                             </Button>
@@ -94,6 +100,7 @@ export default function ProjectListPage( { token }) {
     const [isCreator, setIsCreator] = useState(false);
     const [projectMember, setProjectMember] = useState("");
     const [projectMembers, setProjectMembers] = useState([]);
+    const [authorityModalIsOpen, setAuthorityModalIsOpen] = useState(false);
 
     const form = useForm({
         resolver: zodResolver(projectDetailSchema),
@@ -189,10 +196,11 @@ export default function ProjectListPage( { token }) {
         </h1>
             <ProjectTable 
                 list={projectList}
+                setAuthorityModalIsOpen={setAuthorityModalIsOpen}
                 setDetailModalIsOpen={setDetailModalIsOpen}
                 setSelectedProject={setSelectedProject}
-                isCreator={true}
                 setIsCreator={setIsCreator}
+                isCreator={true}
             />
         
         {projectList.length === 0 &&
@@ -340,10 +348,63 @@ export default function ProjectListPage( { token }) {
                             >
                                 저장
                             </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="bg-primary-500 text-white px-3"
+                                onClick={() => {
+                                    setAuthorityModalIsOpen(true);
+                                    setIsCreator(isCreator);
+                                }}
+                                disabled={!isCreator}
+                            >
+                                권한설정
+                            </Button>
                         </div>
                     </form>
                 </Form>
             </DetailModal>
+            {/* <DetailModal
+                title="프로젝트 구성원 권한설정"
+                isOpen={authorityModalIsOpen}
+                setIsOpen={setAuthorityModalIsOpen}
+            >
+                <Label>구성원 목록</Label>
+                <Table>
+                    <TableHeader>
+                        <TableRow className="bg-gray-100">
+                            <TableHead className="text-center border-r">
+                                이름
+                            </TableHead>
+                            <TableHead className="text-center border-r">
+                                이메일
+                            </TableHead>
+                            <TableHead className="text-center">
+                                권한 여부
+                            </TableHead>
+                            <TableHead className="w-32 text-center"></TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {project.projectMemberInfos.map((project) => (
+                        <TableRow key={project.projectMemberInfos.id}>
+                            <TableCell className="text-center border-r">
+                                {project.projectMemberInfos.value}
+                            </TableCell>
+                            <TableCell className="text-center border-r">
+                                {project.projectMemberInfos.email}
+                            </TableCell>
+                            <TableCell className="text-center">
+                                <input type="radio" id="true" name="boolean" values="true" checked>관리자</input>
+                                <input type="radio" id="false" name="boolean" values="false">구성원</input>
+                                {project.projectMemberInfos.creator}
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                    </TableBody>
+                
+                </Table>
+            </DetailModal> */}
     </>
     )
 }
