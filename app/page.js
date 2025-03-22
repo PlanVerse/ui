@@ -63,7 +63,7 @@ export default function LandingPage() {
         </Section>
       </main>
       <footer className="bg-muted py-6">
-        <div className="container mx-auto px-4 text-center text-secondary-400">
+        <div className="w-full max-w-7xl mx-auto px-4 text-center text-secondary-400">
           &copy; 2024 PlanVerse. All rights reserved.
         </div>
       </footer>
