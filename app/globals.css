@@ -97,3 +97,11 @@ body {
 .noscrollbar::-webkit-scrollbar {
     display: none;
 }
+
+.ce-block__content {
+    max-width: 1280px;
+}
+
+.ce-toolbar__content {
+    max-width: 1280px;
+}
