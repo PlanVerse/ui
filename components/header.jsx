@@ -30,7 +30,7 @@ export default function Header({ token }) {
       `fixed top-0 ${token ? "left-[255px]" : "w-full"} right-0 z-50 transition-all duration-200`,
       isScrolled ? "bg-background/80 backdrop-blur-sm shadow-sm" : "bg-transparent",
     )}>
-      <div className="container mx-auto px-4">
+      <div className="w-full max-w-7xl mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
             <Avatar>
