@@ -24,8 +24,8 @@ const projectDetailSchema = z.object({
     projectDescription: z.string().max(100),
 })
 
-const ProjectTable = ({ 
-    list, 
+const ProjectTable = ({
+    list,
     setDetailModalIsOpen,
     setSelectedProject,
     isCreator,
@@ -33,7 +33,7 @@ const ProjectTable = ({
 }) => (
     <div className="border rounded-md overflow-hidden">
         {/* 프로젝트 목록 테이블 */}
-        <Table> 
+        <Table>
             <TableHeader>
                 <TableRow className="bg-gray-100">
                     <TableHead className="text-center border-r">
@@ -48,16 +48,16 @@ const ProjectTable = ({
                     <TableHead className="w-32 text-center"></TableHead>
                 </TableRow>
             </TableHeader>
-            
+
             <TableBody>
                 {list.map((project) => (
                     <TableRow key={project.id}>
                         <TableCell className="text-center border-r">
-                            <Link 
-                                href={`/project/list/detail/${project.id}`}                
+                            <Link
+                                className="text-blue-600 text-decoration-line: underline"
+                                href={`/project/list/detail/${project.id}`}
                             >
                                 {project.name}
-                                
                             </Link>
                         </TableCell>
                         <TableCell className="text-center border-r">
@@ -91,7 +91,7 @@ const ProjectTable = ({
     </div>
 )
 
-export default function ProjectListPage( { token }) {
+export default function ProjectListPage({ token }) {
     // 프로젝트 목록 페이지
     const [isLoading, setIsLoading] = useState(true);
     const [projectList, setProjectList] = useState([]);
@@ -119,15 +119,16 @@ export default function ProjectListPage( { token }) {
     };
 
     function deleteProject() {
-        if(confirm("프로젝트를 정말 삭제하시겠습니까?")) {
+        if (confirm("프로젝트를 정말 삭제하시겠습니까?")) {
             setProjectList(projectList.filter((id) => id !== projectList));
         } else {
             return;
         }
     }
 
+    {/* 수정할 부분 */ }
     function modifyProject() {
-        if(confirm("프로젝트 정보를 수정하시겠습니까?")) {
+        if (confirm("프로젝트 정보를 수정하시겠습니까?")) {
             alert("프로젝트 정보가 수정되었습니다.");
         } else {
             return;
@@ -155,28 +156,28 @@ export default function ProjectListPage( { token }) {
     };
 
     useEffect(() => {
-    async function fetchProjectList() {
-        const requestProjectList = await getApi(`/project/list/1`, null, {
-            headers: {
-                Authorization: `Bearer ${token}`
+        async function fetchProjectList() {
+            const requestProjectList = await getApi(`/project/list/1`, null, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            if (requestProjectList.status === 401) {
+                await removeSession();
             }
-        })
-           
-        if (requestProjectList.status === 401) {
-            await removeSession();
-        }
-            
-        if (requestProjectList.data.content.length > 0) {
-            setProjectList(requestProjectList.data.content);
+
+            if (requestProjectList.data.content.length > 0) {
+                setProjectList(requestProjectList.data.content);
+            };
         };
-    };
-    
-    Promise.all([
-        fetchProjectList(),
-    ])
-        .then(() => {
-            setIsLoading(false);
-        });
+
+        Promise.all([
+            fetchProjectList(),
+        ])
+            .then(() => {
+                setIsLoading(false);
+            });
     }, []);
 
     useEffect(() => {
@@ -189,12 +190,12 @@ export default function ProjectListPage( { token }) {
         return <Loading />
     };
 
-    return(
+    return (
         <>
-        <h1 className="text-2xl font-bold mb-8">
-            프로젝트 목록
-        </h1>
-            <ProjectTable 
+            <h1 className="text-2xl font-bold mb-8">
+                프로젝트 목록
+            </h1>
+            <ProjectTable
                 list={projectList}
                 setAuthorityModalIsOpen={setAuthorityModalIsOpen}
                 setDetailModalIsOpen={setDetailModalIsOpen}
@@ -202,23 +203,23 @@ export default function ProjectListPage( { token }) {
                 setIsCreator={setIsCreator}
                 isCreator={true}
             />
-        
-        {projectList.length === 0 &&
-            <div className="w-full h-[calc(100vh-176px)] flex flex-col gap-4 items-center justify-center">
-                <p className="w-fit">
-                    소속된 프로젝트가 없습니다.
-                </p>
-                <Link href="/project/create">
-                    <Button
-                        variant="outline"
-                        className="bg-primary-500 text-white"
-                        disabled={!isCreator}
-                    >
-                        새 프로젝트 생성
-                    </Button>
-                </Link>
-            </div>
-        }
+
+            {projectList.length === 0 &&
+                <div className="w-full h-[calc(100vh-176px)] flex flex-col gap-4 items-center justify-center">
+                    <p className="w-fit">
+                        소속된 프로젝트가 없습니다.
+                    </p>
+                    <Link href="/project/create">
+                        <Button
+                            variant="outline"
+                            className="bg-primary-500 text-white"
+                            disabled={!isCreator}
+                        >
+                            새 프로젝트 생성
+                        </Button>
+                    </Link>
+                </div>
+            }
             <DetailModal
                 title="프로젝트 상세정보"
                 isOpen={detailModalIsOpen}
@@ -226,7 +227,7 @@ export default function ProjectListPage( { token }) {
             >
                 <Form {...form}>
                     <form
-                        onProjectSubmit={(e) => {
+                        onSubmit={(e) => {
                             e.preventDefault();
                             form.handleSubmit(onProjectSubmit)(e);
                         }}
@@ -319,19 +320,20 @@ export default function ProjectListPage( { token }) {
                                             className="w-fit flex items-center gap-2"
                                         >
                                             {projectMember}
-                                                <X
-                                                    className="w-3 h-3"
-                                                    onClick={() => {
-                                                        if (!isCreator) return;
-                                                        setProjectMembers(projectMembers.filter((m) => m !== projectMember));
-                                                    }}
-                                                />
+                                            <X
+                                                className="w-3 h-3"
+                                                onClick={() => {
+                                                    if (!isCreator) return;
+                                                    setProjectMembers(projectMembers.filter((m) => m !== projectMember));
+                                                }}
+                                            />
                                         </Badge>
                                     ))
                                 }
                             </div>
                         </div>
                         <div className="flex justify-end">
+                            {/* 수정할 부분 */}
                             <Button
                                 type="submit"
                                 className="bg-primary-500 text-white disabled:bg-gray-400"
@@ -340,6 +342,7 @@ export default function ProjectListPage( { token }) {
                             >
                                 삭제
                             </Button>
+                            {/* 수정할 부분 */}
                             <Button
                                 type="submit"
                                 className="bg-primary-500 text-white disabled:bg-gray-400"
@@ -405,6 +408,6 @@ export default function ProjectListPage( { token }) {
                 
                 </Table>
             </DetailModal> */}
-    </>
+        </>
     )
 }
