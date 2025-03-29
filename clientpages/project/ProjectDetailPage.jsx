@@ -1,11 +1,14 @@
 "use client";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { getAvatarFallback } from "@/lib/avatar";
 import { useEffect, useState } from "react";
 import { getApi } from "@/lib/axios";
+import { useParams } from "next/navigation";
+import Loading from "@/components/Loading";
 
 const ProjectDetailTable = ({
-    list
+    requestProjectDetail
 }) => (
     <div className="border rounded-md overflow-hidden">
         {/* 프로젝트 상세 정보 테이블 */}
@@ -22,11 +25,20 @@ const ProjectDetailTable = ({
             </TableHeader>
 
             <TableBody>
-                {list.map((project) => (
-                <TableRow key={project.id}>
-                    {project.description}
-                </TableRow>
-                ))}
+                {requestProjectDetail && (
+                    <TableRow key={requestProjectDetail.id}>
+                        <TableCell className="text-center border-r">
+                            {requestProjectDetail.description}
+                        </TableCell>
+                        <TableCell className="text-center flex">
+                            {requestProjectDetail.projectMemberInfos && requestProjectDetail.projectMemberInfos.length > 0 && requestProjectDetail.projectMemberInfos.map((member, index) => (
+                                <div key={`${member.id}_${index}`} className={`w-10 h-10 text-sm border border-gray-400 rounded-full flex items-center justify-center font-semibold`}>
+                                    {getAvatarFallback(member.username)}
+                                </div>
+                            ))}
+                        </TableCell>
+                    </TableRow>
+                )}
             </TableBody>
         </Table>
     </div>
@@ -34,44 +46,48 @@ const ProjectDetailTable = ({
 
 export default function ProjectDetailPage({ token }) {
 
-    const [loading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [projectDetail, setProjectDetail] = useState([]);
+    const params = useParams();
+    const { id } = params;
 
-useEffect(()=> {
-    async function fetchProjectDetail() {
-        const requestProjectDetail = await getApi(`/project/list/1`, null, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-        })
+    useEffect(() => {
+        async function fetchProjectDetail() {
+            const requestProjectDetail = await getApi(`/project/info/${id}`, null, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(requestProjectDetail);
 
-        if (requestProjectDetail.status === 401) {
-            await removeSession();
-        }
-
-        if (requestProjectDetail.data.content.length > 0) {
-            setProjectDetail(requestProjectDetail.data.content);
+            if (requestProjectDetail.status === 401) {
+                return await removeSession();
+            }
+            setProjectDetail(requestProjectDetail.data);
         };
-    };
 
-    Promise.all([
-        fetchProjectDetail(),
-    ])
-        .then(() => {
-            setIsLoading(false);
-        });
-}, []);
+        Promise.all([
+            fetchProjectDetail(),
+        ])
+            .then(() => {
+                setIsLoading(false);
+            });
+    }, []);
 
-console.log(projectDetail);
-    return(
+    if (isLoading) {
+        return <Loading />
+    }
+
+    return (
         <>
-                {/* {projectDetail.id === id &&
-                 <h1 className="text-2xl font-bold mb-8">{projectDetail.name}</h1>
-                } */}
-            
-            <ProjectDetailTable 
+            {/* <h1 className="text-2xl font-bold mb-8">{project.name}</h1> */}
+            {/* <h1 className="text-2xl font-bold mb-8">{project.description}</h1> */}
+            {/* <h1 className="text-2xl font-bold mb-8">{project.name}</h1> */}
+            {/* <ProjectDetailTable 
                 list={projectDetail}
-            />
+            /> */}
+            <h1 className="text-2xl font-bold mb-8">{projectDetail.name}</h1>
+            <ProjectDetailTable requestProjectDetail={projectDetail} />
         </>
     )
 }
