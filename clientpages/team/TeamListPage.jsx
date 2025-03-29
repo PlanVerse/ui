@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { getAvatarFallback } from "@/lib/avatar";
 import { getApi, putApi } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 // import { teamListMock } from "@/mock/team";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -28,7 +28,7 @@ const teamDetailSchema = z.object({
     //     username: z.string(),
     //     profileImageUrl: z.string()
     // }))
-})
+});
 
 const TeamTable = ({
     list,
@@ -321,10 +321,11 @@ export default function TeamListPage({ token }) {
                             />
                             {teamMember.length > 0 && (
                                 <div
-                                    className="absolute top-[69px] left-0 right-0 bg-gray-100 p-2"
+                                    className="absolute top-[69px] left-0 right-0 flex items-center justify-between bg-gray-100 p-2 cursor-pointer"
                                     onClick={addMember}
                                 >
                                     {teamMember}
+                                    <Plus size={16} className="!w-4 !h-4" />
                                 </div>
                             )}
                             <div className="w-full flex gap-2 flex-wrap">

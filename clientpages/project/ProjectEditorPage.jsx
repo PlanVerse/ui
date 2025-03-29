@@ -22,8 +22,14 @@ import { Calendar } from "@/components/ui/calendar";
 import moment from "moment";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Settings } from "lucide-react";
+import { Paperclip, Plus, Settings, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import DetailModal from "@/components/DetailModal";
+import { Form } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Label } from "@/components/ui/label";
 
 export default function Page({ token }) {
   const ejInstance = useRef(null);
@@ -31,6 +37,15 @@ export default function Page({ token }) {
   const [title, setTitle] = useState("");
   const [isOpenCalendar, setIsOpenCalendar] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState(undefined);
+  const [detailModalIsOpen, setDetailModalIsOpen] = useState(false);
+  const [managers, setManagers] = useState([]);
+  const [member, setMember] = useState("");
+  const [members, setMembers] = useState([]);
+  const [files, setFiles] = useState([]);
+
+  const form = useForm({
+    resolver: zodResolver(z.string())
+  });
 
   const initEditor = () => {
     const editor = new EditorJS({
@@ -151,6 +166,48 @@ export default function Page({ token }) {
     });
   };
 
+  function addMember() {
+    setMember("");
+    if (members.includes(member)) {
+        return;
+    }
+    setMembers([...members, member]);
+  };
+
+  async function onSubmit(values) {
+    try {
+      setDetailModalIsOpen(false);
+    } catch (error) {
+      return;
+    }
+  };
+
+  async function handleAddFile(event) {
+    const files = Array.from(event.target.files);
+    setFiles(prev => [...prev, ...files]);
+  };
+
+  async function handleFileUpload() {
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append("files", file);
+    });
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/editor/file/upload/:targetId`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData,
+      });
+      const responseJson = await response.json();
+      setFiles(prev => [...prev, ...responseJson.files]);
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
   useEffect(() => {
     if (ejInstance.current === null) {
       initEditor();
@@ -161,6 +218,8 @@ export default function Page({ token }) {
       ejInstance.current = null;
     };
   }, []);
+
+  // TODO: 
 
   return (
     <div className="flex flex-col items-center w-full max-w-7xl mx-auto px-4">
@@ -223,15 +282,112 @@ export default function Page({ token }) {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex items-center gap-4 w-full mb-4">
+      <div className="relative flex items-center gap-4 w-full mb-4">
         <p className="w-full text-gray-500 font-semibold">
           담당자
         </p>
-        <Button variant="ghost" className="p-0 rounded-none w-9">
+        <Button
+          variant="ghost"
+          className="p-0 rounded-none w-9"
+          onClick={() => setDetailModalIsOpen(true)}
+        >
           <Settings size={24} className="!w-6 !h-6" />
         </Button>
       </div>
+      <div className="flex gap-2 w-full">
+        {files.map((file, index) => (
+          <div key={index} className="flex gap-2 items-center bg-gray-100 rounded-full p-2">
+            <Paperclip size={16} />
+            <p className="max-w-24 truncate">{file.name}</p>
+          </div>
+        ))}
+        <div className="flex gap-2 items-center mb-4 text-gray-500 font-semibold cursor-pointer">
+          <input
+            type="file"
+            multiple
+            onChange={handleAddFile}
+            id="file-input"
+            className="hidden"
+          />
+          <label htmlFor="file-input" className="flex gap-2 items-center cursor-pointer">
+            <p className="w-fit">파일 추가</p>
+            <Plus size={16} />
+          </label>
+        </div>
+      </div>
+      <DetailModal
+        title="담당자 수정"
+        isOpen={detailModalIsOpen}
+        setIsOpen={setDetailModalIsOpen}
+      >
+        <Form {...form}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit(onSubmit)(e);
+            }}
+          >
+            <div className="relative">
+              <Label className="text-sm font-medium">담당자</Label>
+              <Input
+                id="manager"
+                placeholder="담당자를 입력하세요"
+                className="rounded-sm my-2"
+                value={member}
+                onChange={(e) => {
+                  setMember(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addMember();
+                  }
+                }}
+              />
+              {member.length > 0 && (
+                <div
+                  className="absolute top-[69px] left-0 right-0 flex items-center justify-between bg-gray-100 p-2 cursor-pointer z-10"
+                  onClick={addMember}
+                >
+                  {member}
+                  <Plus size={16} className="!w-4 !h-4" />
+                </div>
+              )}
+              <div className="w-full flex gap-2 flex-wrap">
+                {members.length > 0 &&
+                  members.map((member, index) => (
+                    <Badge
+                      key={index}
+                      variant="secondary"
+                      className="w-fit flex items-center gap-2"
+                    >
+                      {member}
+                      <X
+                        className="w-3 h-3"
+                        onClick={() => setMembers(members.filter((m) => m !== member))}
+                      />
+                    </Badge>
+                  ))
+                }
+              </div>
+            </div>
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                className="bg-primary-500 text-white disabled:bg-gray-400"
+              >
+                저장
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DetailModal>
       <div id="editor" className="w-full" />
+      <Button
+        className="fixed bottom-4 right-4"
+      >
+        저장
+      </Button>
     </div>
   );
 }
