@@ -30,6 +30,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Label } from "@/components/ui/label";
+import { getApi } from "@/lib/axios";
+import { useParams } from "next/navigation";
 
 export default function Page({ token }) {
   const ejInstance = useRef(null);
@@ -42,6 +44,8 @@ export default function Page({ token }) {
   const [member, setMember] = useState("");
   const [members, setMembers] = useState([]);
   const [files, setFiles] = useState([]);
+
+  const params = useParams();
 
   const form = useForm({
     resolver: zodResolver(z.string())
@@ -218,8 +222,61 @@ export default function Page({ token }) {
       ejInstance.current = null;
     };
   }, []);
+  
+  useEffect(() => {
+    async function fetchProjectDetail() {
+      try {
+      //   {
+      //     "success": true,
+      //     "code": "0000",
+      //     "message": "성공",
+      //     "data": {
+      //         "content": [],
+      //         "pageable": {
+      //             "pageNumber": 0,
+      //             "pageSize": 20,
+      //             "sort": {
+      //                 "orders": [],
+      //                 "unsorted": true,
+      //                 "sorted": false,
+      //                 "empty": true
+      //             },
+      //             "offset": 0,
+      //             "unpaged": false,
+      //             "paged": true
+      //         },
+      //         "hasNext": false,
+      //         "numberOfElements": 0,
+      //         "first": true,
+      //         "last": true,
+      //         "size": 20,
+      //         "number": 0,
+      //         "sort": {
+      //             "orders": [],
+      //             "unsorted": true,
+      //             "sorted": false,
+      //             "empty": true
+      //         },
+      //         "empty": true
+      //     }
+      // }
 
-  // TODO: 
+        // TODO: 프로젝트 상세 정보 가져오기
+        const response = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/workflow/list/${params.id}`, null, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        console.log(response);
+        // setEditorData(response);
+      } catch (e) {
+        throw new Error(e);
+      }
+
+    };
+
+    fetchProjectDetail();
+  }, []);
 
   return (
     <div className="flex flex-col items-center w-full max-w-7xl mx-auto px-4">

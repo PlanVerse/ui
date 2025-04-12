@@ -41,7 +41,6 @@ export default function TeamCreatePage({ token }) {
         setMembers([...members, teamMember]);
     };
 
-    // TODO: onSubmit 동작 안하는 이슈 해결
     async function onSubmit(values) {
         console.log(values);
         await postApi(`/team`, {
@@ -53,7 +52,7 @@ export default function TeamCreatePage({ token }) {
                 Authorization: `Bearer ${token}`
             }
         });
-        router.refresh();
+        window.location.reload();
     };
 
     return (
@@ -65,7 +64,7 @@ export default function TeamCreatePage({ token }) {
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
-                        form.handleSubmit(onSubmit);
+                        form.handleSubmit(onSubmit)(e);
                     }}
                     className="space-y-8 max-w-96 mx-auto"
                 >
