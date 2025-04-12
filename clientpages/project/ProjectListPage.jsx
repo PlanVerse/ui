@@ -17,7 +17,6 @@ import DetailModal from "@/components/DetailModal";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import Loading from "@/components/Loading";
-// import { useState } from "react";
 
 const projectDetailSchema = z.object({
     projectName: z.string().max(50),
@@ -126,14 +125,13 @@ export default function ProjectListPage({ token }) {
         }
     }
 
-    {/* 수정할 부분 */ }
-    function modifyProject() {
-        if (confirm("프로젝트 정보를 수정하시겠습니까?")) {
-            alert("프로젝트 정보가 수정되었습니다.");
-        } else {
-            return;
-        }
-    }
+    // function modifyProject() {
+    //     if (confirm("프로젝트 정보를 수정하시겠습니까?")) {
+    //         alert("프로젝트 정보가 수정되었습니다.");
+    //     } else {
+    //         return;
+    //     }
+    // }
 
     async function onProjectSubmit(values) {
         try {
@@ -195,15 +193,16 @@ export default function ProjectListPage({ token }) {
             <h1 className="text-2xl font-bold mb-8">
                 프로젝트 목록
             </h1>
-            <ProjectTable
-                list={projectList}
-                setAuthorityModalIsOpen={setAuthorityModalIsOpen}
-                setDetailModalIsOpen={setDetailModalIsOpen}
-                setSelectedProject={setSelectedProject}
-                setIsCreator={setIsCreator}
-                isCreator={true}
-            />
-
+            {projectList.lnegth > 0 &&
+                <ProjectTable
+                    list={projectList}
+                    setAuthorityModalIsOpen={setAuthorityModalIsOpen}
+                    setDetailModalIsOpen={setDetailModalIsOpen}
+                    setSelectedProject={setSelectedProject}
+                    setIsCreator={setIsCreator}
+                    isCreator={true}
+                />
+            }
             {projectList.length === 0 &&
                 <div className="w-full h-[calc(100vh-176px)] flex flex-col gap-4 items-center justify-center">
                     <p className="w-fit">
@@ -335,7 +334,6 @@ export default function ProjectListPage({ token }) {
                         <div className="flex justify-end">
                             {/* 수정할 부분 */}
                             <Button
-                                type="submit"
                                 className="bg-primary-500 text-white disabled:bg-gray-400"
                                 disabled={!isCreator}
                                 onClick={deleteProject}
@@ -347,7 +345,6 @@ export default function ProjectListPage({ token }) {
                                 type="submit"
                                 className="bg-primary-500 text-white disabled:bg-gray-400"
                                 disabled={!isCreator}
-                                onClick={modifyProject}
                             >
                                 저장
                             </Button>
@@ -367,7 +364,7 @@ export default function ProjectListPage({ token }) {
                     </form>
                 </Form>
             </DetailModal>
-            {/* <DetailModal
+            <DetailModal
                 title="프로젝트 구성원 권한설정"
                 isOpen={authorityModalIsOpen}
                 setIsOpen={setAuthorityModalIsOpen}
@@ -389,25 +386,34 @@ export default function ProjectListPage({ token }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {project.projectMemberInfos.map((project) => (
-                        <TableRow key={project.projectMemberInfos.id}>
-                            <TableCell className="text-center border-r">
-                                {project.projectMemberInfos.value}
-                            </TableCell>
-                            <TableCell className="text-center border-r">
-                                {project.projectMemberInfos.email}
-                            </TableCell>
-                            <TableCell className="text-center">
-                                <input type="radio" id="true" name="boolean" values="true" checked>관리자</input>
-                                <input type="radio" id="false" name="boolean" values="false">구성원</input>
-                                {project.projectMemberInfos.creator}
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                        {projectList.projectMemberInfos &&
+                            <TableRow key={projectList.projectMemberInfos.id}>
+                                <TableCell className="text-center border-r">
+                                    {projectList.projectMemberInfos.value}
+                                </TableCell>
+                                <TableCell className="text-center border-r">
+                                    {projectList.projectMemberInfos.email}
+                                </TableCell>
+                                <TableCell className="text-center">
+                                    <Button
+                                        className="bg-primary-500 text-white px-3"
+                                        variant="outline"
+                                    >
+                                        관리자
+                                    </Button>
+                                    <Button
+                                        className="bg-"
+                                    >
+                                        구성원
+                                    </Button>
+                                    {/* {projectList.projectMemberInfos.creator} */}
+                                </TableCell>
+                            </TableRow>
+                        }
                     </TableBody>
-                
+
                 </Table>
-            </DetailModal> */}
+            </DetailModal>
         </>
     )
 }
