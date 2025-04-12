@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { getApi } from "@/lib/axios";
 import { useParams } from "next/navigation";
 import Loading from "@/components/Loading";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const ProjectDetailTable = ({
     requestProjectDetail
@@ -80,14 +82,21 @@ export default function ProjectDetailPage({ token }) {
 
     return (
         <>
-            {/* <h1 className="text-2xl font-bold mb-8">{project.name}</h1> */}
-            {/* <h1 className="text-2xl font-bold mb-8">{project.description}</h1> */}
-            {/* <h1 className="text-2xl font-bold mb-8">{project.name}</h1> */}
-            {/* <ProjectDetailTable 
-                list={projectDetail}
-            /> */}
             <h1 className="text-2xl font-bold mb-8">{projectDetail.name}</h1>
             <ProjectDetailTable requestProjectDetail={projectDetail} />
+            <div
+                className="w-full flex justify-end"
+            >
+                <Button
+                    className="bg-primary-500 hover:bg-primary-600"
+                >
+                    <Link
+                        href="/project/list"
+                    >
+                        목록
+                    </Link>
+                </Button>
+            </div>
         </>
     )
 }
