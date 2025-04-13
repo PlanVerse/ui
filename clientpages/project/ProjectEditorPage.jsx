@@ -30,7 +30,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Label } from "@/components/ui/label";
-import { getApi } from "@/lib/axios";
+import { getApi, postApi } from "@/lib/axios";
 import { useParams } from "next/navigation";
 
 export default function Page({ token }) {
@@ -39,6 +39,7 @@ export default function Page({ token }) {
   const [title, setTitle] = useState("");
   const [isOpenCalendar, setIsOpenCalendar] = useState(false);
   const [selectedDateRange, setSelectedDateRange] = useState(undefined);
+  const [stepList, setStepList] = useState([]);
   const [detailModalIsOpen, setDetailModalIsOpen] = useState(false);
   const [managers, setManagers] = useState([]);
   const [member, setMember] = useState("");
@@ -173,7 +174,7 @@ export default function Page({ token }) {
   function addMember() {
     setMember("");
     if (members.includes(member)) {
-        return;
+      return;
     }
     setMembers([...members, member]);
   };
@@ -198,7 +199,7 @@ export default function Page({ token }) {
     });
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/editor/file/upload/:targetId`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/editor/file/upload/${params.id}`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`
@@ -212,8 +213,29 @@ export default function Page({ token }) {
     }
   };
 
+  async function handleSave() {
+    try {
+      await postApi(`${process.env.NEXT_PUBLIC_API_URL}/workflow`, {
+        projectInfoId: 1,
+        stepInfoId: 1,
+        title,
+        content: [
+          {
+
+          }
+        ]
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    } catch (error) {
+
+    }
+  }
+
   useEffect(() => {
-    if (ejInstance.current === null) {
+    if (editorData && ejInstance.current === null) {
       initEditor();
     }
 
@@ -221,53 +243,92 @@ export default function Page({ token }) {
       ejInstance?.current?.destroy();
       ejInstance.current = null;
     };
-  }, []);
-  
+  }, [editorData]);
+
   useEffect(() => {
     async function fetchProjectDetail() {
       try {
-      //   {
-      //     "success": true,
-      //     "code": "0000",
-      //     "message": "성공",
-      //     "data": {
-      //         "content": [],
-      //         "pageable": {
-      //             "pageNumber": 0,
-      //             "pageSize": 20,
-      //             "sort": {
-      //                 "orders": [],
-      //                 "unsorted": true,
-      //                 "sorted": false,
-      //                 "empty": true
-      //             },
-      //             "offset": 0,
-      //             "unpaged": false,
-      //             "paged": true
-      //         },
-      //         "hasNext": false,
-      //         "numberOfElements": 0,
-      //         "first": true,
-      //         "last": true,
-      //         "size": 20,
-      //         "number": 0,
-      //         "sort": {
-      //             "orders": [],
-      //             "unsorted": true,
-      //             "sorted": false,
-      //             "empty": true
-      //         },
-      //         "empty": true
-      //     }
-      // }
+        // {
+        //   "success": true,
+        //     "code": "0000",
+        //       "message": "성공",
+        //         "data": {
+        //     "content": [
+        //       {
+        //         "id": 1,
+        //         "key": "4b751cb9-fe38-46c3-996e-4934acdaa293",
+        //         "projectInfoId": 3,
+        //         "stepInfoId": 2,
+        //         "title": "title",
+        //         "content": [
+        //           {
+        //             "time": 1550476186479,
+        //             "blocks": [
+        //               {
+        //                 "id": "oUq2g_tl8y",
+        //                 "data": {
+        //                   "text": "Editor.js",
+        //                   "level": 2
+        //                 },
+        //                 "type": "header"
+        //               }
+        //             ]
+        //           }
+        //         ],
+        //         "stepInfo": {
+        //           "id": 2,
+        //           "projectInfoId": 3,
+        //           "name": "name",
+        //           "color": "#112233",
+        //           "sort": 1
+        //         }
+        //       }
+        //     ],
+        //       "pageable": {
+        //       "pageNumber": 0,
+        //         "pageSize": 20,
+        //           "sort": {
+        //         "orders": [],
+        //           "unsorted": true,
+        //             "sorted": false,
+        //               "empty": true
+        //       },
+        //       "offset": 0,
+        //         "unpaged": false,
+        //           "paged": true
+        //     },
+        //     "hasNext": false,
+        //       "numberOfElements": 1,
+        //         "first": true,
+        //           "last": true,
+        //             "size": 20,
+        //               "number": 0,
+        //                 "sort": {
+        //       "orders": [],
+        //         "unsorted": true,
+        //           "sorted": false,
+        //             "empty": true
+        //     },
+        //     "empty": false
+        //   }
+        // }
 
         // TODO: 프로젝트 상세 정보 가져오기
-        const response = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/workflow/list/${params.id}`, null, {
+        const workflowListResponse = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/workflow/content/${params.id}`, null, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        console.log(response);
+        const stepListResponse = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/step/list/${params.id}`, null, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setEditorData(workflowListResponse.data.content);
+        setStepList(stepListResponse.data);
+
+        console.log("workflowListResponse", workflowListResponse);
+        console.log("stepListResponse", stepListResponse);
         // setEditorData(response);
       } catch (e) {
         throw new Error(e);
@@ -442,6 +503,7 @@ export default function Page({ token }) {
       <div id="editor" className="w-full" />
       <Button
         className="fixed bottom-4 right-4"
+        onClick={handleSave}
       >
         저장
       </Button>
