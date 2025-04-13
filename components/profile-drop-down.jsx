@@ -57,13 +57,13 @@ export function ProfileDropDown() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            <Link href="/team/management" className="w-full cursor-pointer">
-              팀 설정
+            <Link href="/team/list" className="w-full cursor-pointer">
+              팀 목록
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/project/setting" className="w-full cursor-pointer">
-              프로젝트 설정
+            <Link href="/project/list" className="w-full cursor-pointer">
+              프로젝트 목록
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
@@ -71,7 +71,7 @@ export function ProfileDropDown() {
         <DropdownMenuItem onClick={handleLogout}>
           로그아웃
         </DropdownMenuItem>
-      </DropdownMenuContent> 
+      </DropdownMenuContent>
     </DropdownMenu>
   )
 }

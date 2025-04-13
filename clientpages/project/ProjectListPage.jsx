@@ -17,6 +17,7 @@ import DetailModal from "@/components/DetailModal";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import Loading from "@/components/Loading";
+import { SelectTrigger } from "@radix-ui/react-select";
 
 const projectDetailSchema = z.object({
     projectName: z.string().max(50),
@@ -160,6 +161,7 @@ export default function ProjectListPage({ token }) {
                     Authorization: `Bearer ${token}`
                 }
             })
+            console.log(projectList);
 
             if (requestProjectList.status === 401) {
                 await removeSession();
@@ -169,7 +171,6 @@ export default function ProjectListPage({ token }) {
                 setProjectList(requestProjectList.data.content);
             };
         };
-
         Promise.all([
             fetchProjectList(),
         ])
@@ -365,7 +366,7 @@ export default function ProjectListPage({ token }) {
                 </Form>
             </DetailModal>
             <DetailModal
-                title="프로젝트 구성원 권한설정"
+                title="프로젝트 멤버 권한설정"
                 isOpen={authorityModalIsOpen}
                 setIsOpen={setAuthorityModalIsOpen}
             >
@@ -389,23 +390,27 @@ export default function ProjectListPage({ token }) {
                         {projectList.projectMemberInfos &&
                             <TableRow key={projectList.projectMemberInfos.id}>
                                 <TableCell className="text-center border-r">
-                                    {projectList.projectMemberInfos.value}
+                                    {projectList.projectMemberInfos.username}
                                 </TableCell>
                                 <TableCell className="text-center border-r">
                                     {projectList.projectMemberInfos.email}
                                 </TableCell>
                                 <TableCell className="text-center">
-                                    <Button
-                                        className="bg-primary-500 text-white px-3"
-                                        variant="outline"
-                                    >
-                                        관리자
-                                    </Button>
-                                    <Button
-                                        className="bg-"
-                                    >
-                                        구성원
-                                    </Button>
+                                    <Select>
+                                        <SelectTrigger className="w-fit">
+                                            <SelectValue placeholder=
+                                                {projectList.projectMemberInfos.creator === true && "관리자"
+                                                    && projectList.projectMemberInfos.creator === false && "멤버"
+                                                }
+                                            />
+                                        </SelectTrigger>
+                                        <SelectItem value={projectList.projectMemberInfos.creator === true}>
+                                            <Badge className="bg-green-400 text-white">관리자</Badge>
+                                        </SelectItem>
+                                        <SelectItem value={projectList.projectMemberInfos.creator === false}>
+                                            <Badge className="bg-blue-400 text-white">멤버</Badge>
+                                        </SelectItem>
+                                    </Select>
                                     {/* {projectList.projectMemberInfos.creator} */}
                                 </TableCell>
                             </TableRow>
