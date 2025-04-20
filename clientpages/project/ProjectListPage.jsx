@@ -161,7 +161,6 @@ export default function ProjectListPage({ token }) {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(projectList);
 
             if (requestProjectList.status === 401) {
                 await removeSession();
@@ -387,29 +386,29 @@ export default function ProjectListPage({ token }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {projectList.map((projectList) => (
-                            <TableRow key={projectList.projectMemberInfos.id}>
+                        {selectedProject.projectMemberInfos.map((projectListMemberInfo) => (
+                            <TableRow key={projectListMemberInfo.id}>
                                 <TableCell className="text-center border-r">
-                                    {projectList.projectMemberInfos.username}
+                                    {projectListMemberInfo.username}
                                 </TableCell>
                                 <TableCell className="text-center border-r">
-                                    {projectList.projectMemberInfos.email}
+                                    {projectListMemberInfo.email}
                                 </TableCell>
                                 <TableCell className="text-center">
                                     <Select>
                                         <SelectTrigger className="w-fit">
                                             <SelectValue placeholder=
-                                                {projectList.projectMemberInfos.creator === true && "관리자"
-                                                    && projectList.projectMemberInfos.creator === false && "멤버"
+                                                {projectListMemberInfo.creator === true && "관리자"
+                                                    && projectListMemberInfo.creator === false && "멤버"
                                                 }
                                             />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectGroup>
-                                                <SelectItem value={projectList.projectMemberInfos.creator === true}>
+                                                <SelectItem value={projectListMemberInfo.creator === true}>
                                                     <Badge className="bg-green-400 text-white">관리자</Badge>
                                                 </SelectItem>
-                                                <SelectItem value={projectList.projectMemberInfos.creator === false}>
+                                                <SelectItem value={projectListMemberInfo.creator === false}>
                                                     <Badge className="bg-blue-400 text-white">멤버</Badge>
                                                 </SelectItem>
                                             </SelectGroup>
