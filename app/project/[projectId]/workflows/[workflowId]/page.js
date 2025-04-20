@@ -4,7 +4,7 @@ import { getSession } from "@/lib/session";
 export default async function page() {
     const token = await getSession();
 
-    return(
-            <ProjectWorkflowPage token={token} />
+    return (
+        <ProjectWorkflowPage token={token} />
     )
 }

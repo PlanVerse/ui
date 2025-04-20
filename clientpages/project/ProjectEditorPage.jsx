@@ -30,7 +30,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Label } from "@/components/ui/label";
-import { getApi, postApi } from "@/lib/axios";
+import { getApi, postApi, putApi } from "@/lib/axios";
 import { useParams } from "next/navigation";
 
 export default function Page({ token }) {
@@ -215,22 +215,19 @@ export default function Page({ token }) {
 
   async function handleSave() {
     try {
-      await postApi(`${process.env.NEXT_PUBLIC_API_URL}/workflow`, {
-        projectInfoId: 1,
-        stepInfoId: 1,
+      const savedData = await ejInstance.current.save();
+      await putApi(`${process.env.NEXT_PUBLIC_API_URL}/workflow`, {
+        workflowInfoId: params.id,
+        projectInfoId: 3,
         title,
-        content: [
-          {
-
-          }
-        ]
+        content: savedData
       }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
     } catch (error) {
-
+      console.error(error);
     }
   }
 
@@ -324,11 +321,9 @@ export default function Page({ token }) {
             Authorization: `Bearer ${token}`
           }
         });
+        setTitle(workflowListResponse.data.title);
         setEditorData(workflowListResponse.data.content);
         setStepList(stepListResponse.data);
-
-        console.log("workflowListResponse", workflowListResponse);
-        console.log("stepListResponse", stepListResponse);
         // setEditorData(response);
       } catch (e) {
         throw new Error(e);
@@ -500,7 +495,7 @@ export default function Page({ token }) {
           </form>
         </Form>
       </DetailModal>
-      <div id="editor" className="w-full" />
+      <div id="editor" className="w-full bg-gray-50 rounded-3xl px-8 py-4" />
       <Button
         className="fixed bottom-4 right-4"
         onClick={handleSave}
