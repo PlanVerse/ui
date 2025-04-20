@@ -8,6 +8,8 @@ import { useParams } from "next/navigation";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { RemoveFormatting } from "lucide-react";
+import { removeSession } from "@/lib/session";
 
 const ProjectDetailTable = ({
     requestProjectDetail
@@ -48,10 +50,34 @@ const ProjectDetailTable = ({
 
 export default function ProjectDetailPage({ token }) {
 
+    const [workflowList, setWorkflowList] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [projectDetail, setProjectDetail] = useState([]);
     const params = useParams();
     const { id } = params;
+
+    useEffect(() => {
+        async function fetchWorkflowList() {
+            const requestWorkflowList = await getApi(`/workflow/list/${id}`, null, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(requestWorkflowList);
+
+            if (requestWorkflowList.status === 401) {
+                return await removeSession();
+            }
+            setWorkflowList(requestWorkflowList.data);
+        };
+
+        Promise.all([
+            fetchWorkflowList(),
+        ])
+            .then(() => {
+                setIsLoading(false);
+            });
+    }, []);
 
     useEffect(() => {
         async function fetchProjectDetail() {
@@ -82,8 +108,36 @@ export default function ProjectDetailPage({ token }) {
 
     return (
         <>
-            <h1 className="text-2xl font-bold mb-8">{projectDetail.name}</h1>
-            <ProjectDetailTable requestProjectDetail={projectDetail} />
+            <h1 className="text-2xl font-bold mb-8">
+                {projectDetail.name}
+            </h1>
+
+            <ProjectDetailTable
+                requestProjectDetail={projectDetail}
+            />
+
+            <div className="w-full h-px bg-gray-200 my-8"></div>
+
+            <h1 className="text-2xl font-bold mb-8">
+                워크플로우
+            </h1>
+            <div className="border rounded-md overflow-hidden">
+                <Table>
+                    <TableHeader>
+                        <TableRow className="bg-gray-100">
+                            <TableHead className="text-center border-r">
+                                제목
+                            </TableHead>
+                            <TableHead className="text-center">
+                                진행 단계
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                </Table>
+            </div>
+
+            <div className="w-full h-px bg-gray-200 my-8"></div>
+
             <div
                 className="w-full flex justify-end"
             >

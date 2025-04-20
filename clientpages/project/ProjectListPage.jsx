@@ -17,7 +17,7 @@ import DetailModal from "@/components/DetailModal";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import Loading from "@/components/Loading";
-import { SelectTrigger } from "@radix-ui/react-select";
+import { Select, SelectTrigger, SelectValue, SelectItem, SelectContent, SelectGroup } from "@/components/ui/select";
 
 const projectDetailSchema = z.object({
     projectName: z.string().max(50),
@@ -55,7 +55,7 @@ const ProjectTable = ({
                         <TableCell className="text-center border-r">
                             <Link
                                 className="text-blue-600 text-decoration-line: underline"
-                                href={`/project/list/detail/${project.id}`}
+                                href={`/project/${project.id}`}
                             >
                                 {project.name}
                             </Link>
@@ -387,7 +387,7 @@ export default function ProjectListPage({ token }) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {projectList.projectMemberInfos &&
+                        {projectList.map((projectList) => (
                             <TableRow key={projectList.projectMemberInfos.id}>
                                 <TableCell className="text-center border-r">
                                     {projectList.projectMemberInfos.username}
@@ -404,17 +404,21 @@ export default function ProjectListPage({ token }) {
                                                 }
                                             />
                                         </SelectTrigger>
-                                        <SelectItem value={projectList.projectMemberInfos.creator === true}>
-                                            <Badge className="bg-green-400 text-white">관리자</Badge>
-                                        </SelectItem>
-                                        <SelectItem value={projectList.projectMemberInfos.creator === false}>
-                                            <Badge className="bg-blue-400 text-white">멤버</Badge>
-                                        </SelectItem>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value={projectList.projectMemberInfos.creator === true}>
+                                                    <Badge className="bg-green-400 text-white">관리자</Badge>
+                                                </SelectItem>
+                                                <SelectItem value={projectList.projectMemberInfos.creator === false}>
+                                                    <Badge className="bg-blue-400 text-white">멤버</Badge>
+                                                </SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
                                     </Select>
                                     {/* {projectList.projectMemberInfos.creator} */}
                                 </TableCell>
                             </TableRow>
-                        }
+                        ))}
                     </TableBody>
 
                 </Table>
