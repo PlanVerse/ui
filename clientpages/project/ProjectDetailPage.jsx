@@ -8,7 +8,6 @@ import { useParams } from "next/navigation";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { RemoveFormatting } from "lucide-react";
 import { removeSession } from "@/lib/session";
 
 const ProjectDetailTable = ({
@@ -48,36 +47,47 @@ const ProjectDetailTable = ({
     </div>
 )
 
+const WorkflowTable = ({
+    requestWorkflowList
+}) => {
+    { /* 워크플로우 테이블 */ }
+    <div className="border rounded-md overflow-hidden">
+        <Table>
+            <TableHeader>
+                <TableRow className="bg-gray-100">
+                    <TableHead className="text-center border-r">
+                        제목
+                    </TableHead>
+                    <TableHead className="text-center">
+                        진행 단계
+                    </TableHead>
+                </TableRow>
+            </TableHeader>
+
+            { /*Todo 테이블이 출력되도록 코드 수정 */}
+            <TableBody>
+                {requestWorkflowList &&
+                    <TableRow key={requestWorkflowList.content.id}>
+                        <TableCell>
+                            {requestWorkflowList.title}
+                        </TableCell>
+                        <TableCell>
+                            {requestWorkflowList.stepInfoId}
+                        </TableCell>
+                    </TableRow>
+                }
+            </TableBody>
+        </Table>
+    </div>
+}
+
 export default function ProjectDetailPage({ token }) {
 
-    const [workflowList, setWorkflowList] = useState([]);
+    const [workflowList, setWorkflowList] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [projectDetail, setProjectDetail] = useState([]);
     const params = useParams();
     const { id } = params;
-
-    useEffect(() => {
-        async function fetchWorkflowList() {
-            const requestWorkflowList = await getApi(`/workflow/list/${id}`, null, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-            console.log(requestWorkflowList);
-
-            if (requestWorkflowList.status === 401) {
-                return await removeSession();
-            }
-            setWorkflowList(requestWorkflowList.data);
-        };
-
-        Promise.all([
-            fetchWorkflowList(),
-        ])
-            .then(() => {
-                setIsLoading(false);
-            });
-    }, []);
 
     useEffect(() => {
         async function fetchProjectDetail() {
@@ -102,9 +112,34 @@ export default function ProjectDetailPage({ token }) {
             });
     }, []);
 
+    useEffect(() => {
+        async function fetchWorkflowList() {
+            const requestWorkflowList = await getApi(`/workflow/list/${id}`, null, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            console.log(requestWorkflowList);
+
+            if (requestWorkflowList.status === 401) {
+                return await removeSession();
+            }
+            setWorkflowList(requestWorkflowList.data);
+        };
+
+        Promise.all([
+            fetchWorkflowList(),
+        ])
+            .then(() => {
+                setIsLoading(false);
+            });
+    }, []);
+
     if (isLoading) {
         return <Loading />
     }
+
+    console.log(workflowList);
 
     return (
         <>
@@ -121,20 +156,10 @@ export default function ProjectDetailPage({ token }) {
             <h1 className="text-2xl font-bold mb-8">
                 워크플로우
             </h1>
-            <div className="border rounded-md overflow-hidden">
-                <Table>
-                    <TableHeader>
-                        <TableRow className="bg-gray-100">
-                            <TableHead className="text-center border-r">
-                                제목
-                            </TableHead>
-                            <TableHead className="text-center">
-                                진행 단계
-                            </TableHead>
-                        </TableRow>
-                    </TableHeader>
-                </Table>
-            </div>
+
+            <WorkflowTable
+                requestWorkflowList={workflowList}
+            />
 
             <div className="w-full h-px bg-gray-200 my-8"></div>
 
