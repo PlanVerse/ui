@@ -34,9 +34,10 @@ import { z } from "zod";
 import { Label } from "@/components/ui/label";
 import { getApi, putApi } from "@/lib/axios";
 import { useParams } from "next/navigation";
+import Loading from "@/components/Loading";
 
 export default function ProjectWorkflowPage({ token }) {
-  const ejInstance = useRef(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [editorData, setEditorData] = useState(null);
   const [title, setTitle] = useState("");
   const [isOpenCalendar, setIsOpenCalendar] = useState(false);
@@ -47,6 +48,8 @@ export default function ProjectWorkflowPage({ token }) {
   const [member, setMember] = useState("");
   const [members, setMembers] = useState([]);
   const [files, setFiles] = useState([]);
+  
+  const ejInstance = useRef(null);
 
   const params = useParams();
 
@@ -218,6 +221,9 @@ export default function ProjectWorkflowPage({ token }) {
   async function handleSave() {
     try {
       const savedData = await ejInstance.current.save();
+      if (files.length > 0) {
+        await handleFileUpload();
+      }
       await putApi(`${process.env.NEXT_PUBLIC_API_URL}/workflow`, {
         workflowInfoId: params.workflowId,
         projectInfoId: params.projectId,
@@ -247,70 +253,6 @@ export default function ProjectWorkflowPage({ token }) {
   useEffect(() => {
     async function fetchProjectDetail() {
       try {
-        // {
-        //   "success": true,
-        //     "code": "0000",
-        //       "message": "성공",
-        //         "data": {
-        //     "content": [
-        //       {
-        //         "id": 1,
-        //         "key": "4b751cb9-fe38-46c3-996e-4934acdaa293",
-        //         "projectInfoId": 3,
-        //         "stepInfoId": 2,
-        //         "title": "title",
-        //         "content": [
-        //           {
-        //             "time": 1550476186479,
-        //             "blocks": [
-        //               {
-        //                 "id": "oUq2g_tl8y",
-        //                 "data": {
-        //                   "text": "Editor.js",
-        //                   "level": 2
-        //                 },
-        //                 "type": "header"
-        //               }
-        //             ]
-        //           }
-        //         ],
-        //         "stepInfo": {
-        //           "id": 2,
-        //           "projectInfoId": 3,
-        //           "name": "name",
-        //           "color": "#112233",
-        //           "sort": 1
-        //         }
-        //       }
-        //     ],
-        //       "pageable": {
-        //       "pageNumber": 0,
-        //         "pageSize": 20,
-        //           "sort": {
-        //         "orders": [],
-        //           "unsorted": true,
-        //             "sorted": false,
-        //               "empty": true
-        //       },
-        //       "offset": 0,
-        //         "unpaged": false,
-        //           "paged": true
-        //     },
-        //     "hasNext": false,
-        //       "numberOfElements": 1,
-        //         "first": true,
-        //           "last": true,
-        //             "size": 20,
-        //               "number": 0,
-        //                 "sort": {
-        //       "orders": [],
-        //         "unsorted": true,
-        //           "sorted": false,
-        //             "empty": true
-        //     },
-        //     "empty": false
-        //   }
-        // }
 
         // TODO: 프로젝트 상세 정보 가져오기
         const workflowListResponse = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/workflow/content/${params.workflowId}`, null, {
@@ -329,12 +271,18 @@ export default function ProjectWorkflowPage({ token }) {
         // setEditorData(response);
       } catch (e) {
         throw new Error(e);
+      } finally {
+        setIsLoading(false);
       }
 
     };
 
     fetchProjectDetail();
   }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex flex-col items-center w-full max-w-7xl mx-auto px-4">
@@ -345,34 +293,48 @@ export default function ProjectWorkflowPage({ token }) {
         onChange={(e) => setTitle(e.target.value)}
         className="w-full mb-4 border-none text-2xl font-bold p-0 shadow-none focus-visible:ring-0"
       />
-      <div className="flex items-center gap-4 w-full mb-4">
-        <div className="relative">
-          <p
-            className="w-fit text-gray-500 font-semibold cursor-pointer"
-            onClick={() => setIsOpenCalendar(!isOpenCalendar)}
-          >
-            {selectedDateRange?.from ?
-              selectedDateRange?.to ?
-                `${moment(selectedDateRange.from).format("YYYY-MM-DD")} ~ ${moment(selectedDateRange.to).format("YYYY-MM-DD")}`
-                : `${moment(selectedDateRange.from).format("YYYY-MM-DD")}`
-              : "기간 선택"}
-          </p>
-          {isOpenCalendar && (
-            <Calendar
-              mode="range"
-              selected={selectedDateRange}
-              onSelect={(range) => setSelectedDateRange(range)}
-              className="absolute top-6 left-0 z-10 bg-white shadow-md rounded-md"
-            />
-          )}
-        </div>
+      <div className="relative w-full mb-4">
+        <p
+          className="w-fit text-gray-500 font-semibold cursor-pointer"
+          onClick={() => setIsOpenCalendar(!isOpenCalendar)}
+        >
+          {selectedDateRange?.from ?
+            selectedDateRange?.to ?
+              `${moment(selectedDateRange.from).format("YYYY-MM-DD")} ~ ${moment(selectedDateRange.to).format("YYYY-MM-DD")}`
+              : `${moment(selectedDateRange.from).format("YYYY-MM-DD")}`
+            : "기간 선택"}
+        </p>
+        {isOpenCalendar && (
+          <Calendar
+            mode="range"
+            selected={selectedDateRange}
+            onSelect={(range) => setSelectedDateRange(range)}
+            className="absolute top-6 left-0 z-10 bg-white shadow-md rounded-md"
+          />
+        )}
+      </div>
+      {/* 진행 단계 사용자가 추가할 수 있도록 수정 */}
+      <div className="w-full mb-4">
         <Select>
           <SelectTrigger className="w-fit">
             <SelectValue placeholder="진행 단계" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              <SelectItem value="접수">
+              {stepList.sort((a, b) => a.sort - b.sort).map(step => (
+                <SelectItem key={step.id} value={step.id}>
+                  <Badge className={step.color}>
+                    {step.name}
+                  </Badge>
+                </SelectItem>
+              ))}
+              <SelectItem value="add">
+                <div className="flex items-center gap-2">
+                  <Plus size={16} />
+                  <span>추가</span>
+                </div>
+              </SelectItem>
+              {/* <SelectItem value="접수">
                 <Badge variant="secondary">접수</Badge>
               </SelectItem>
               <SelectItem value="진행">
@@ -392,7 +354,7 @@ export default function ProjectWorkflowPage({ token }) {
               </SelectItem>
               <SelectItem value="취소">
                 <Badge className="bg-red-400 text-white">취소</Badge>
-              </SelectItem>
+              </SelectItem> */}
             </SelectGroup>
           </SelectContent>
         </Select>

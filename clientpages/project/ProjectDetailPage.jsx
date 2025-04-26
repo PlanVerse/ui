@@ -49,8 +49,7 @@ const ProjectDetailTable = ({
 
 const WorkflowTable = ({
     requestWorkflowList
-}) => {
-    { /* 워크플로우 테이블 */ }
+}) => (
     <div className="border rounded-md overflow-hidden">
         <Table>
             <TableHeader>
@@ -66,20 +65,20 @@ const WorkflowTable = ({
 
             { /*Todo 테이블이 출력되도록 코드 수정 */}
             <TableBody>
-                {requestWorkflowList &&
-                    <TableRow key={requestWorkflowList.content.id}>
+                {requestWorkflowList.content.map((workflow) => (
+                    <TableRow key={workflow.id}>
                         <TableCell>
-                            {requestWorkflowList.title}
+                            {workflow.title}
                         </TableCell>
                         <TableCell>
-                            {requestWorkflowList.stepInfoId}
+                            {workflow.stepInfoId}
                         </TableCell>
                     </TableRow>
-                }
+                ))}
             </TableBody>
         </Table>
     </div>
-}
+)
 
 export default function ProjectDetailPage({ token }) {
 
@@ -155,9 +154,11 @@ export default function ProjectDetailPage({ token }) {
                 워크플로우
             </h1>
 
-            <WorkflowTable
-                requestWorkflowList={workflowList}
-            />
+            {workflowList &&
+                <WorkflowTable
+                    requestWorkflowList={workflowList}
+                />
+            }
 
             <div className="w-full h-px bg-gray-200 my-8"></div>
 
