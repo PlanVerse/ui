@@ -43,7 +43,7 @@ export default function SignInPage() {
       alert("로그인 되었습니다");
 
       // 팀 목록이 있는지 확인 후 있으면 팀 목록 페이지로, 없는 경우 팀 생성 페이지로 이동
-      const fetchTeamList = await getApi(`/team/list/creator`, null, {
+      const fetchTeamList = await getApi(`/team/list/create`, null, {
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
