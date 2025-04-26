@@ -364,64 +364,65 @@ export default function ProjectListPage({ token }) {
                     </form>
                 </Form>
             </DetailModal>
-            <DetailModal
-                title="프로젝트 멤버 권한설정"
-                isOpen={authorityModalIsOpen}
-                setIsOpen={setAuthorityModalIsOpen}
-            >
-                <Label>구성원 목록</Label>
-                <Table>
-                    <TableHeader>
-                        <TableRow className="bg-gray-100">
-                            <TableHead className="text-center border-r">
-                                이름
-                            </TableHead>
-                            <TableHead className="text-center border-r">
-                                이메일
-                            </TableHead>
-                            <TableHead className="text-center">
-                                권한 여부
-                            </TableHead>
-                            <TableHead className="w-32 text-center"></TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {selectedProject.projectMemberInfos.map((projectListMemberInfo) => (
-                            <TableRow key={projectListMemberInfo.id}>
-                                <TableCell className="text-center border-r">
-                                    {projectListMemberInfo.username}
-                                </TableCell>
-                                <TableCell className="text-center border-r">
-                                    {projectListMemberInfo.email}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                    <Select>
-                                        <SelectTrigger className="w-fit">
-                                            <SelectValue placeholder=
-                                                {projectListMemberInfo.creator === true && "관리자"
-                                                    && projectListMemberInfo.creator === false && "멤버"
-                                                }
-                                            />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectItem value={projectListMemberInfo.creator === true}>
-                                                    <Badge className="bg-green-400 text-white">관리자</Badge>
-                                                </SelectItem>
-                                                <SelectItem value={projectListMemberInfo.creator === false}>
-                                                    <Badge className="bg-blue-400 text-white">멤버</Badge>
-                                                </SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    {/* {projectList.projectMemberInfos.creator} */}
-                                </TableCell>
+            {selectedProject &&
+                <DetailModal
+                    title="프로젝트 멤버 권한설정"
+                    isOpen={authorityModalIsOpen}
+                    setIsOpen={setAuthorityModalIsOpen}
+                >
+                    <Label>구성원 목록</Label>
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="bg-gray-100">
+                                <TableHead className="text-center border-r">
+                                    이름
+                                </TableHead>
+                                <TableHead className="text-center border-r">
+                                    이메일
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    권한 여부
+                                </TableHead>
+                                <TableHead className="w-32 text-center"></TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
-
-                </Table>
-            </DetailModal>
+                        </TableHeader>
+                        <TableBody>
+                            {selectedProject.projectMemberInfos.map((projectListMemberInfo) => (
+                                <TableRow key={projectListMemberInfo.id}>
+                                    <TableCell className="text-center border-r">
+                                        {projectListMemberInfo.username}
+                                    </TableCell>
+                                    <TableCell className="text-center border-r">
+                                        {projectListMemberInfo.email}
+                                    </TableCell>
+                                    <TableCell className="text-center">
+                                        <Select>
+                                            <SelectTrigger className="w-fit">
+                                                <SelectValue placeholder=
+                                                    {projectListMemberInfo.creator === true && "관리자"
+                                                        && projectListMemberInfo.creator === false && "멤버"
+                                                    }
+                                                />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectItem value={projectListMemberInfo.creator === true}>
+                                                        <Badge className="bg-green-400 text-white">관리자</Badge>
+                                                    </SelectItem>
+                                                    <SelectItem value={projectListMemberInfo.creator === false}>
+                                                        <Badge className="bg-blue-400 text-white">멤버</Badge>
+                                                    </SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                        {/* {projectList.projectMemberInfos.creator} */}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </DetailModal>
+            }
         </>
     )
 }

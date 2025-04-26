@@ -87,16 +87,17 @@ export default function ProjectDetailPage({ token }) {
     const [isLoading, setIsLoading] = useState(true);
     const [projectDetail, setProjectDetail] = useState([]);
     const params = useParams();
-    const { id } = params;
+    const { projectId } = params;
+
+    console.log("projectId", projectId);
 
     useEffect(() => {
         async function fetchProjectDetail() {
-            const requestProjectDetail = await getApi(`/project/info/${id}`, null, {
+            const requestProjectDetail = await getApi(`/project/info/${projectId}`, null, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-            })
-            console.log(requestProjectDetail);
+            });
 
             if (requestProjectDetail.status === 401) {
                 return await removeSession();
@@ -114,12 +115,11 @@ export default function ProjectDetailPage({ token }) {
 
     useEffect(() => {
         async function fetchWorkflowList() {
-            const requestWorkflowList = await getApi(`/workflow/list/${id}`, null, {
+            const requestWorkflowList = await getApi(`/workflow/list/${projectId}`, null, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(requestWorkflowList);
 
             if (requestWorkflowList.status === 401) {
                 return await removeSession();
@@ -138,8 +138,6 @@ export default function ProjectDetailPage({ token }) {
     if (isLoading) {
         return <Loading />
     }
-
-    console.log(workflowList);
 
     return (
         <>

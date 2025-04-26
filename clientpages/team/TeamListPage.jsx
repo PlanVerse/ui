@@ -141,7 +141,7 @@ export default function TeamListPage({ token }) {
 
     useEffect(() => {
         async function fetchTeamList() {
-            const requestCreatedTeamList = await getApi(`/team/list/creator`, null, {
+            const requestCreatedTeamList = await getApi(`/team/list/create`, null, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -165,9 +165,9 @@ export default function TeamListPage({ token }) {
 
             if (requestJoinedTeamList.status === 401) {
                 await removeSession();
-            };
-
-            if (requestJoinedTeamList.data.content.length > 0) {
+            } else if (requestJoinedTeamList.status === 404) {
+                return;
+            } else if (requestJoinedTeamList.data.content.length > 0) {
                 setJoinedTeamList(requestJoinedTeamList.data.content);
             };
         };
