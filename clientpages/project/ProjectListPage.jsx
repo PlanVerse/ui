@@ -18,6 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import Loading from "@/components/Loading";
 import { Select, SelectTrigger, SelectValue, SelectItem, SelectContent, SelectGroup } from "@/components/ui/select";
+import { useParams } from "next/navigation";
 
 const projectDetailSchema = z.object({
     projectName: z.string().max(50),
@@ -54,7 +55,8 @@ const ProjectTable = ({
                     <TableRow key={project.id}>
                         <TableCell className="text-center border-r">
                             <Link
-                                className="text-blue-600 text-decoration-line: underline"
+                                // className="text-blue-600 text-decoration-line: underline"
+                                className="hover:text-primary-500"
                                 href={`/project/${project.id}`}
                             >
                                 {project.name}
@@ -398,18 +400,14 @@ export default function ProjectListPage({ token }) {
                                     <TableCell className="text-center">
                                         <Select>
                                             <SelectTrigger className="w-fit">
-                                                <SelectValue placeholder=
-                                                    {projectListMemberInfo.creator === true && "관리자"
-                                                        && projectListMemberInfo.creator === false && "멤버"
-                                                    }
-                                                />
+                                                <SelectValue placeholder={projectListMemberInfo.creator === true ? "관리자" : "멤버"} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    <SelectItem value={projectListMemberInfo.creator === true}>
+                                                    <SelectItem value="true">
                                                         <Badge className="bg-green-400 text-white">관리자</Badge>
                                                     </SelectItem>
-                                                    <SelectItem value={projectListMemberInfo.creator === false}>
+                                                    <SelectItem value="false">
                                                         <Badge className="bg-blue-400 text-white">멤버</Badge>
                                                     </SelectItem>
                                                 </SelectGroup>
