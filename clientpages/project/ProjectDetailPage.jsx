@@ -63,12 +63,17 @@ const WorkflowTable = ({
                 </TableRow>
             </TableHeader>
 
-            { /*Todo 테이블이 출력되도록 코드 수정 */}
             <TableBody>
                 {requestWorkflowList.content.map((workflow) => (
                     <TableRow key={workflow.id}>
                         <TableCell>
-                            {workflow.title}
+                            <Link
+                                // href={`/project/${projectId}/workflow/${workflow.id}`}
+                                href={`/project/posts/${workflow.id}`}
+                                className="hover:text-primary-500"
+                            >
+                                {workflow.title}
+                            </Link>
                         </TableCell>
                         <TableCell>
                             {workflow.stepInfoId}
