@@ -103,6 +103,7 @@ export default function ProjectListPage({ token }) {
     const [projectMember, setProjectMember] = useState("");
     const [projectMembers, setProjectMembers] = useState([]);
     const [authorityModalIsOpen, setAuthorityModalIsOpen] = useState(false);
+    // const [authority, setAuthority] = useState(false);
 
     const form = useForm({
         resolver: zodResolver(projectDetailSchema),
@@ -128,14 +129,6 @@ export default function ProjectListPage({ token }) {
         }
     }
 
-    // function modifyProject() {
-    //     if (confirm("프로젝트 정보를 수정하시겠습니까?")) {
-    //         alert("프로젝트 정보가 수정되었습니다.");
-    //     } else {
-    //         return;
-    //     }
-    // }
-
     async function onProjectSubmit(values) {
         try {
             await putApi(`/project/info`, {
@@ -158,7 +151,7 @@ export default function ProjectListPage({ token }) {
 
     useEffect(() => {
         async function fetchProjectList() {
-            const requestProjectList = await getApi(`/project/list/1`, null, {
+            const requestProjectList = await getApi(`/project/list`, null, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -400,7 +393,9 @@ export default function ProjectListPage({ token }) {
                                     <TableCell className="text-center">
                                         <Select>
                                             <SelectTrigger className="w-fit">
-                                                <SelectValue placeholder={projectListMemberInfo.creator === true ? "관리자" : "멤버"} />
+                                                <SelectValue
+                                                    placeholder={projectListMemberInfo.creator === true ? "관리자" : "멤버"}
+                                                />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
@@ -419,6 +414,17 @@ export default function ProjectListPage({ token }) {
                             ))}
                         </TableBody>
                     </Table>
+                    <div className="flex justify-end">
+                        <Button
+                            // onClick={() => {
+                            //     setAuthority(true);
+                            // }}
+                            className="bg-primary-500 text-white disabled:bg-gray-400"
+                            disabled={!isCreator}
+                        >
+                            저장
+                        </Button>
+                    </div>
                 </DetailModal>
             }
         </>

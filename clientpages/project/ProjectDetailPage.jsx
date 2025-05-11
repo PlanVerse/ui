@@ -48,7 +48,8 @@ const ProjectDetailTable = ({
 )
 
 const WorkflowTable = ({
-    requestWorkflowList
+    requestWorkflowList,
+    projectId
 }) => (
     <div className="border rounded-md overflow-hidden">
         <Table>
@@ -68,8 +69,7 @@ const WorkflowTable = ({
                     <TableRow key={workflow.id}>
                         <TableCell>
                             <Link
-                                // href={`/project/${projectId}/workflow/${workflow.id}`}
-                                href={`/project/posts/${workflow.id}`}
+                                href={`/project/${projectId}/workflow/${workflow.id}`}
                                 className="hover:text-primary-500"
                             >
                                 {workflow.title}
@@ -162,6 +162,7 @@ export default function ProjectDetailPage({ token }) {
             {workflowList &&
                 <WorkflowTable
                     requestWorkflowList={workflowList}
+                    projectId={projectId}
                 />
             }
 
