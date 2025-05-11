@@ -24,7 +24,7 @@ import { Calendar } from "@/components/ui/calendar";
 import moment from "moment";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Paperclip, Plus, Settings, X } from "lucide-react";
+import { ArrowUp, Paperclip, Plus, Settings, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DetailModal from "@/components/DetailModal";
 import { Form } from "@/components/ui/form";
@@ -48,7 +48,10 @@ export default function ProjectWorkflowPage({ token }) {
   const [member, setMember] = useState("");
   const [members, setMembers] = useState([]);
   const [files, setFiles] = useState([]);
-  
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const [commentModalIsOpen, setCommentModalIsOpen] = useState(false);
+
   const ejInstance = useRef(null);
 
   const params = useParams();
@@ -81,7 +84,7 @@ export default function ProjectWorkflowPage({ token }) {
                 bodyData.append("file", file);
 
                 try {
-                  const uploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/editor/upload/99`, {
+                  const uploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/editor/upload/${params.workflowId}`, {
                     method: "POST",
                     headers: {
                       Authorization: `Bearer ${token}`
@@ -190,6 +193,10 @@ export default function ProjectWorkflowPage({ token }) {
     } catch (error) {
       return;
     }
+  };
+
+  const handleComment = async () => {
+
   };
 
   async function handleAddFile(event) {
@@ -371,6 +378,22 @@ export default function ProjectWorkflowPage({ token }) {
           <Settings size={24} className="!w-6 !h-6" />
         </Button>
       </div>
+      <div className="flex gap-2 w-full mb-4 cursor-pointer">
+        <Input
+          type="text"
+          placeholder="댓글"
+          className="w-full bg-gray-50 shadow-none"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
+        <Button
+          variant="ghost"
+          className="rounded-full bg-primary-500 text-white size-9"
+          onClick={handleComment}
+        >
+          <ArrowUp size={24} className="!size-5" />
+        </Button>
+      </div>
       <div className="flex gap-2 w-full">
         {files.map((file, index) => (
           <div key={index} className="flex gap-2 items-center bg-gray-100 rounded-full p-2">
@@ -458,6 +481,13 @@ export default function ProjectWorkflowPage({ token }) {
             </div>
           </form>
         </Form>
+      </DetailModal>
+      <DetailModal
+        title="댓글"
+        isOpen={commentModalIsOpen}
+        setIsOpen={setCommentModalIsOpen}
+      >
+        
       </DetailModal>
       <div id="editor" className="w-full bg-gray-50 rounded-3xl px-8 py-4" />
       <Button
