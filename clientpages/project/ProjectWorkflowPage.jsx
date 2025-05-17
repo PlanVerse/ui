@@ -32,9 +32,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Label } from "@/components/ui/label";
-import { getApi, putApi } from "@/lib/axios";
+import { getApi, postApi, putApi } from "@/lib/axios";
 import { useParams } from "next/navigation";
 import Loading from "@/components/Loading";
+import Image from "next/image";
+import { getAvatarFallback } from "@/lib/avatar";
 
 export default function ProjectWorkflowPage({ token }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -196,7 +198,38 @@ export default function ProjectWorkflowPage({ token }) {
   };
 
   const handleComment = async () => {
-
+    try {
+      await postApi(`${process.env.NEXT_PUBLIC_API_URL}/workflow/comment`, {
+        workflowInfoId: params.workflowId,
+        content: {
+          time: Date.now(),
+          blocks: [
+            {
+              id: "asdfsadfasfsda",
+              data: {
+                text: comment,
+                level: 1
+              },
+              type: "header"
+            }
+          ]
+        }
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setComment("");
+      setComments(prev => [...prev, {
+        name: "test",
+        content: {
+          time: Date.now(),
+          blocks: []
+        }
+      }]);
+    } catch (error) {
+      throw new Error(error);
+    }
   };
 
   async function handleAddFile(event) {
@@ -278,13 +311,29 @@ export default function ProjectWorkflowPage({ token }) {
         // setEditorData(response);
       } catch (e) {
         throw new Error(e);
-      } finally {
-        setIsLoading(false);
       }
-
     };
 
-    fetchProjectDetail();
+    async function fetchComment() {
+      try {
+        const response = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/comment/list/4`, null, {
+          headers: {
+            // Authorization: `Bearer ${token}`
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlNDczNGZmMC01MGY1LTRmMDEtYmM5Zi0xNGFhZmMzMzJmNDkiLCJhdXRoIjoiUk9MRV9TVVBFUl9BRE1JTiIsImV4cCI6MjA2MzAxODY5OX0.6O0K2zkg7YOnBR_MULC0IkSc-jrpCVnoYBLS_qhyI3E`
+          }
+        });
+        setComments(response.data);
+      } catch (e) {
+        throw new Error(e);
+      }
+    }
+
+    Promise.all([
+      fetchProjectDetail(),
+      fetchComment()
+    ]).finally(() => {
+      setIsLoading(false);
+    });
   }, []);
 
   if (isLoading) {
@@ -378,22 +427,46 @@ export default function ProjectWorkflowPage({ token }) {
           <Settings size={24} className="!w-6 !h-6" />
         </Button>
       </div>
-      <div className="flex gap-2 w-full mb-4 cursor-pointer">
-        <Input
-          type="text"
-          placeholder="댓글"
-          className="w-full bg-gray-50 shadow-none"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-        />
-        <Button
-          variant="ghost"
-          className="rounded-full bg-primary-500 text-white size-9"
-          onClick={handleComment}
+      {comments.content.length > 0 ? (
+        <div
+          className="flex gap-2 items-center w-full mb-4 cursor-pointer"
+          onClick={() => setCommentModalIsOpen(true)}
         >
-          <ArrowUp size={24} className="!size-5" />
-        </Button>
-      </div>
+          <div className="w-10 h-10 text-sm border border-gray-400 rounded-full font-semibold bg-white flex items-center justify-center">
+            {getAvatarFallback(comments.content[comments.content.length - 1].content.name)}
+          </div>
+          <p className="w-fit max-w-60vw truncate">
+            {comments
+              .content[
+                comments
+                .content
+                .length - 1
+              ]
+              .content
+              .blocks[
+                comments
+                .content[
+                  comments
+                  .content
+                  .length - 1
+                ]
+                .content
+                .blocks
+                .length - 1
+              ]
+              .data
+              .text
+            }
+          </p>
+        </div>
+      ) : (
+        <p
+          className="w-full text-gray-500 font-semibold mb-4 cursor-pointer"
+          onClick={() => setCommentModalIsOpen(true)}
+        >
+          댓글
+        </p>
+      )}
       <div className="flex gap-2 w-full">
         {files.map((file, index) => (
           <div key={index} className="flex gap-2 items-center bg-gray-100 rounded-full p-2">
@@ -487,7 +560,42 @@ export default function ProjectWorkflowPage({ token }) {
         isOpen={commentModalIsOpen}
         setIsOpen={setCommentModalIsOpen}
       >
-        
+        <div className="flex flex-col gap-8 w-full py-4">
+          {comments.content.map((comment, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between"
+            >
+              <div className="flex gap-4 items-center">
+                <div className="w-10 h-10 text-sm border border-gray-400 rounded-full font-semibold bg-white flex items-center justify-center">
+                  {getAvatarFallback(comment.name)}
+                </div>
+                <p className="w-fit max-w-60vw truncate">
+                  {comment.content.blocks[0].data.text}
+                </p>
+              </div>
+              <p className="w-fit text-gray-500 text-sm">
+                {moment(comment.content.time).format("YYYY-MM-DD HH:mm")}
+              </p>
+            </div>
+          ))}
+        </div>
+        <div className="flex gap-2 w-full">
+          <Input
+            type="text"
+            placeholder="댓글"
+            className="w-full bg-gray-50 shadow-none"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+          <Button
+            variant="ghost"
+            className="rounded-full bg-primary-500 text-white size-9"
+            onClick={handleComment}
+          >
+            <ArrowUp size={24} className="!size-5" />
+          </Button>
+        </div>
       </DetailModal>
       <div id="editor" className="w-full bg-gray-50 rounded-3xl px-8 py-4" />
       <Button
