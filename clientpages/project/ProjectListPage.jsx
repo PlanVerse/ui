@@ -18,7 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import Loading from "@/components/Loading";
 import { Select, SelectTrigger, SelectValue, SelectItem, SelectContent, SelectGroup } from "@/components/ui/select";
-import { useParams } from "next/navigation";
+
 
 const projectDetailSchema = z.object({
     projectName: z.string().max(50),
@@ -103,7 +103,6 @@ export default function ProjectListPage({ token }) {
     const [projectMember, setProjectMember] = useState("");
     const [projectMembers, setProjectMembers] = useState([]);
     const [authorityModalIsOpen, setAuthorityModalIsOpen] = useState(false);
-    // const [authority, setAuthority] = useState(false);
 
     const form = useForm({
         resolver: zodResolver(projectDetailSchema),
@@ -121,13 +120,13 @@ export default function ProjectListPage({ token }) {
         setProjectMembers([...projectMembers, projectMember]);
     };
 
-    function deleteProject() {
-        if (confirm("프로젝트를 정말 삭제하시겠습니까?")) {
-            setProjectList(projectList.filter((id) => id !== projectList));
-        } else {
-            return;
-        }
-    }
+    // function deleteProject() {
+    //     if (confirm("프로젝트를 정말 삭제하시겠습니까?")) {
+    //         setProjectList(projectList.filter((id) => id !== projectList));
+    //     } else {
+    //         return;
+    //     }
+    // }
 
     async function onProjectSubmit(values) {
         try {
@@ -327,15 +326,6 @@ export default function ProjectListPage({ token }) {
                             </div>
                         </div>
                         <div className="flex justify-end">
-                            {/* 수정할 부분 */}
-                            <Button
-                                className="bg-primary-500 text-white disabled:bg-gray-400"
-                                disabled={!isCreator}
-                                onClick={deleteProject}
-                            >
-                                삭제
-                            </Button>
-                            {/* 수정할 부분 */}
                             <Button
                                 type="submit"
                                 className="bg-primary-500 text-white disabled:bg-gray-400"
@@ -408,7 +398,6 @@ export default function ProjectListPage({ token }) {
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
-                                        {/* {projectList.projectMemberInfos.creator} */}
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -416,9 +405,7 @@ export default function ProjectListPage({ token }) {
                     </Table>
                     <div className="flex justify-end">
                         <Button
-                            // onClick={() => {
-                            //     setAuthority(true);
-                            // }}
+                            /* Todo: 권한 설정 기능 추가 */
                             className="bg-primary-500 text-white disabled:bg-gray-400"
                             disabled={!isCreator}
                         >
