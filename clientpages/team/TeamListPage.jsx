@@ -65,7 +65,10 @@ const TeamTable = ({
                         </TableCell>
                         <TableCell className="text-center border-r flex">
                             {team.teamMemberInfos && team.teamMemberInfos.length > 0 && team.teamMemberInfos.map((member, index) => (
-                                <div key={`${member.id}_${index}`} className={`-ml-4 first:ml-0 w-10 h-10 text-sm border border-gray-400 rounded-full flex items-center justify-center font-semibold bg-white`}>
+                                <div
+                                    key={`${member.id}_${index}`}
+                                    className="-ml-4 first:ml-0 w-10 h-10 text-sm border border-gray-400 rounded-full flex items-center justify-center font-semibold bg-white"
+                                >
                                     {getAvatarFallback(member.username)}
                                 </div>
                             ))}
