@@ -4,11 +4,12 @@ export default function DetailModal({
     title,
     children,
     isOpen,
-    setIsOpen
+    setIsOpen,
+    contentClassName
 }) {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogContent>
+            <DialogContent className={contentClassName}>
                 <DialogHeader>
                     <DialogTitle>
                         {title}
