@@ -1,5 +1,3 @@
-// TODO: 500 에러 해결
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -53,6 +51,8 @@ export default function ProjectWorkflowPage({ token }) {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [commentModalIsOpen, setCommentModalIsOpen] = useState(false);
+  const [editCommentId, setEditCommentId] = useState(null);
+  const [editCommentContent, setEditCommentContent] = useState("");
 
   const ejInstance = useRef(null);
 
@@ -199,36 +199,65 @@ export default function ProjectWorkflowPage({ token }) {
 
   const handleComment = async () => {
     try {
-      await postApi(`${process.env.NEXT_PUBLIC_API_URL}/workflow/comment`, {
+      await postApi(`${process.env.NEXT_PUBLIC_API_URL}/comment`, {
         workflowInfoId: params.workflowId,
-        content: {
-          time: Date.now(),
-          blocks: [
-            {
-              id: "asdfsadfasfsda",
-              data: {
-                text: comment,
-                level: 1
-              },
-              type: "header"
-            }
-          ]
-        }
+        content: comment
       }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      setComment("");
-      setComments(prev => [...prev, {
-        name: "test",
-        content: {
-          time: Date.now(),
-          blocks: []
+      const response = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/comment/list/${params.workflowId}`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      }]);
+      });
+      setComment("");
+      setComments(response.data.content.map(content => ({
+        id: content.id,
+        content: content.content,
+        name: content.name,
+        createdAt: content.createdAt
+      })));
     } catch (error) {
       throw new Error(error);
+    }
+  };
+
+  const onEditComment = (id) => {
+    const commentToEdit = comments.find(comment => comment.id === id);
+    if (commentToEdit) {
+      setEditCommentId(id);
+      setEditCommentContent(commentToEdit.content);
+    }
+  };
+
+  const handleEditCommentId = async (id) => {
+    try {
+      await putApi(`${process.env.NEXT_PUBLIC_API_URL}/comment`, {
+        id,
+        workflowInfoId: params.workflowId,
+        content: editCommentContent
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      const response = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/comment/list/${params.workflowId}`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setComments(response.data.content.map(content => ({
+        id: content.id,
+        content: content.content,
+        name: content.name,
+        createdAt: content.createdAt
+      })));
+      setEditCommentId(null);
+      setEditCommentContent("");
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -316,13 +345,17 @@ export default function ProjectWorkflowPage({ token }) {
 
     async function fetchComment() {
       try {
-        const response = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/comment/list/4`, null, {
+        const response = await getApi(`${process.env.NEXT_PUBLIC_API_URL}/comment/list/${params.workflowId}`, null, {
           headers: {
-            // Authorization: `Bearer ${token}`
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlNDczNGZmMC01MGY1LTRmMDEtYmM5Zi0xNGFhZmMzMzJmNDkiLCJhdXRoIjoiUk9MRV9TVVBFUl9BRE1JTiIsImV4cCI6MjA2MzAxODY5OX0.6O0K2zkg7YOnBR_MULC0IkSc-jrpCVnoYBLS_qhyI3E`
+            Authorization: `Bearer ${token}`
           }
         });
-        setComments(response.data);
+        setComments(response.data.content.map(content => ({
+          id: content.id,
+          content: content.content,
+          name: content.name,
+          createdAt: content.createdAt
+        })));
       } catch (e) {
         throw new Error(e);
       }
@@ -427,36 +460,16 @@ export default function ProjectWorkflowPage({ token }) {
           <Settings size={24} className="!w-6 !h-6" />
         </Button>
       </div>
-      {comments.content.length > 0 ? (
+      {comments.length > 0 ? (
         <div
           className="flex gap-2 items-center w-full mb-4 cursor-pointer"
           onClick={() => setCommentModalIsOpen(true)}
         >
           <div className="w-10 h-10 text-sm border border-gray-400 rounded-full font-semibold bg-white flex items-center justify-center">
-            {getAvatarFallback(comments.content[comments.content.length - 1].content.name)}
+            {getAvatarFallback(comments[comments.length - 1].name)}
           </div>
           <p className="w-fit max-w-60vw truncate">
-            {comments
-              .content[
-                comments
-                .content
-                .length - 1
-              ]
-              .content
-              .blocks[
-                comments
-                .content[
-                  comments
-                  .content
-                  .length - 1
-                ]
-                .content
-                .blocks
-                .length - 1
-              ]
-              .data
-              .text
-            }
+            {comments[comments.length - 1].content}
           </p>
         </div>
       ) : (
@@ -559,24 +572,45 @@ export default function ProjectWorkflowPage({ token }) {
         title="댓글"
         isOpen={commentModalIsOpen}
         setIsOpen={setCommentModalIsOpen}
+        contentClassName="max-w-3xl"
       >
         <div className="flex flex-col gap-8 w-full py-4">
-          {comments.content.map((comment, index) => (
+          {comments.map((comment, index) => (
             <div
               key={index}
-              className="flex items-center justify-between"
+              className="flex gap-4 items-center justify-between"
             >
-              <div className="flex gap-4 items-center">
+              <div className="flex flex-1 gap-4 items-center">
                 <div className="w-10 h-10 text-sm border border-gray-400 rounded-full font-semibold bg-white flex items-center justify-center">
                   {getAvatarFallback(comment.name)}
                 </div>
-                <p className="w-fit max-w-60vw truncate">
-                  {comment.content.blocks[0].data.text}
-                </p>
+                {editCommentId === comment.id ? (
+                  <Input
+                    type="text"
+                    value={editCommentContent}
+                    onChange={(e) => setEditCommentContent(e.target.value)}
+                    className="flex-1 text-base"
+                  />
+                ) : (
+                  <p className="w-fit max-w-60vw truncate">
+                    {comment.content}
+                  </p>
+                )}
               </div>
-              <p className="w-fit text-gray-500 text-sm">
-                {moment(comment.content.time).format("YYYY-MM-DD HH:mm")}
-              </p>
+              <div className="flex gap-2 items-center">
+                <p className="w-fit text-gray-500 text-sm">
+                  {moment(comment.createdAt).format("YYYY-MM-DD HH:mm")}
+                </p>
+                <Button onClick={() => {
+                  if (editCommentId === comment.id) {
+                    handleEditCommentId(comment.id);
+                  } else {
+                    onEditComment(comment.id);
+                  }
+                }}>
+                  {editCommentId === comment.id ? "저장" : "수정"}
+                </Button>
+              </div>
             </div>
           ))}
         </div>
