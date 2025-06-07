@@ -159,11 +159,27 @@ export default function ProjectDetailPage({ token }) {
                 워크플로우
             </h1>
 
-            {workflowList &&
+            {workflowList && workflowList.content.length > 0 &&
                 <WorkflowTable
                     requestWorkflowList={workflowList}
                     projectId={projectId}
                 />
+            }
+
+            {workflowList && workflowList.content.length === 0 &&
+                <div className="w-full h-[calc(100vh-176px)] flex flex-col gap-4 items-center justify-center">
+                    <p className="w-fit">
+                        워크플로우가 없습니다.
+                    </p>
+                    <Link href={`/project/${projectId}/workflow/create`}>
+                        <Button
+                            variant="outline"
+                            className="bg-primary-500 text-white"
+                        >
+                            워크플로우 생성
+                        </Button>
+                    </Link>
+                </div>
             }
 
             <div className="w-full h-px bg-gray-200 my-8"></div>
@@ -171,6 +187,17 @@ export default function ProjectDetailPage({ token }) {
             <div
                 className="w-full flex justify-end"
             >
+                <Button
+                    variant="outline"
+                    className="bg-primary-500 text-white"
+                >
+                    <Link
+                        href={`/project/${projectId}/workflow/create`}
+                    >
+                        워크플로우 생성
+                    </Link>
+                </Button>
+
                 <Button
                     className="bg-primary-500 hover:bg-primary-600"
                 >
